@@ -11,7 +11,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    dd();
+    //dd();
     Route::get('/dashboard', function () {
         echo "Admin Dashboard";
         //return view('admin.dashboard');
