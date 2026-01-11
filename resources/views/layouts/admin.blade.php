@@ -1174,14 +1174,14 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}"
-                    href="{{ route('admin.categories.index') }}">
+                        href="{{ route('admin.categories.index') }}">
                         <i class="fas fa-list"></i>
                         <span>Jewellery Categories</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}" href="#">
+                    <a class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
                         <i class="fas fa-gem"></i>
                         <span>Jewelry Products</span>
                         <span class="nav-badge">245</span>
@@ -1273,7 +1273,7 @@
         </main>
     </div>
 
-    
+
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
@@ -1421,27 +1421,27 @@
         });
     </script>
 
-        <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        @if (session('success'))
-            showToast('Success!', '{{ session('success') }}', 'success');
-        @endif
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            @if (session('success'))
+                showToast('Success!', '{{ session('success') }}', 'success');
+            @endif
 
-        @if (session('error'))
-            showToast('Error!', '{{ session('error') }}', 'danger');
-        @endif
+            @if (session('error'))
+                showToast('Error!', '{{ session('error') }}', 'danger');
+            @endif
 
-        @if (session('warning'))
-            showToast('Warning!', '{{ session('warning') }}', 'warning');
-        @endif
+            @if (session('warning'))
+                showToast('Warning!', '{{ session('warning') }}', 'warning');
+            @endif
 
-        @if (session('info'))
-            showToast('Info', '{{ session('info') }}', 'info');
-        @endif
+            @if (session('info'))
+                showToast('Info', '{{ session('info') }}', 'info');
+            @endif
 
-        @if ($errors->any())
-            showToast('Validation Error', 'Please fix the highlighted errors.', 'danger');
-        @endif
+            @if ($errors->any())
+                showToast('Validation Error', 'Please fix the highlighted errors.', 'danger');
+            @endif
     });
     </script>
 </body>
