@@ -426,10 +426,21 @@
             transform: translateY(-4px);
         }
 
-        .stat-card.primary::before { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
-        .stat-card.success::before { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-        .stat-card.warning::before { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-        .stat-card.danger::before { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        .stat-card.primary::before {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        .stat-card.success::before {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .stat-card.warning::before {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .stat-card.danger::before {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
 
         .stat-header {
             display: flex;
@@ -449,11 +460,25 @@
             color: white;
         }
 
-        .stat-icon.primary { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
-        .stat-icon.success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-        .stat-icon.warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-        .stat-icon.danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
-        .stat-icon.gold { background: var(--accent-gradient); }
+        .stat-icon.primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        .stat-icon.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .stat-icon.warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .stat-icon.danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .stat-icon.gold {
+            background: var(--accent-gradient);
+        }
 
         .stat-trend {
             display: flex;
@@ -748,27 +773,52 @@
         }
 
         /* Toast */
-        .toast-container {
+        /* .toast-container {
             position: fixed;
             top: 5rem;
             right: 2rem;
-            z-index: 9999;
+            z-index: 99999;
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            pointer-events: none;
+        } */
+
+        /* Toast */
+        .toast-container {
+            position: fixed !important;
+            top: 5rem !important;
+            right: 2rem !important;
+            z-index: 99999 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1rem !important;
+            pointer-events: none !important;
         }
 
         .toast {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1rem 1.25rem;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            min-width: 320px;
-            animation: slideInRight 0.3s ease;
+            pointer-events: auto !important;
+            background: var(--card-bg) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 12px !important;
+            padding: 1rem 1.25rem !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.75rem !important;
+            min-width: 320px !important;
+            animation: slideInRight 0.3s ease forwards !important;
+            opacity: 1 !important;
+            transform: translateX(0) !important;
+            visibility: visible !important;
+        }
+
+        /* Override universal transitions for toast */
+        .toast,
+        .toast *,
+        .toast-container,
+        .toast-container * {
+            transition: none !important;
         }
 
         @keyframes slideInRight {
@@ -776,9 +826,22 @@
                 transform: translateX(400px);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(400px);
+                opacity: 0;
             }
         }
 
@@ -793,10 +856,64 @@
             flex-shrink: 0;
         }
 
-        .toast-success .toast-icon { background: var(--success); }
-        .toast-warning .toast-icon { background: var(--warning); }
-        .toast-danger .toast-icon { background: var(--danger); }
-        .toast-info .toast-icon { background: var(--info); }
+        .toast-success .toast-icon {
+            background: var(--success);
+        }
+
+        .toast-warning .toast-icon {
+            background: var(--warning);
+        }
+
+        .toast-danger .toast-icon {
+            background: var(--danger);
+        }
+
+        .toast-info .toast-icon {
+            background: var(--info);
+        }
+
+        .toast-body {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 0.9375rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .toast-message {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .toast-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .toast-success .toast-icon {
+            background: var(--success);
+        }
+
+        .toast-warning .toast-icon {
+            background: var(--warning);
+        }
+
+        .toast-danger .toast-icon {
+            background: var(--danger);
+        }
+
+        .toast-info .toast-icon {
+            background: var(--info);
+        }
 
         .toast-body {
             flex: 1;
@@ -940,6 +1057,13 @@
             .stats-grid {
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             }
+
+            .toast-container {
+                right: 1rem;
+                left: 1rem;
+                top: 4rem;
+                /* Adjust for mobile navbar */
+            }
         }
 
         @media (max-width: 640px) {
@@ -1012,7 +1136,11 @@
             transition-timing-function: ease;
         }
 
-        a, button, .nav-link, .icon-btn, .user-profile {
+        a,
+        button,
+        .nav-link,
+        .icon-btn,
+        .user-profile {
             transition-property: all;
         }
     </style>
@@ -1029,7 +1157,7 @@
                 <i class="fas fa-gem"></i>
             </div>
             <div class="brand-text">
-                <h4>LuxeGems</h4>
+                <h4>Garud Jewellers</h4>
                 <span>Admin Panel</span>
             </div>
         </div>
@@ -1045,75 +1173,25 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}"
+                    href="{{ route('admin.categories.index') }}">
+                        <i class="fas fa-list"></i>
+                        <span>Jewellery Categories</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}" href="#">
                         <i class="fas fa-gem"></i>
                         <span>Jewelry Products</span>
                         <span class="nav-badge">245</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/collections*') ? 'active' : '' }}" href="#">
-                        <i class="fas fa-layer-group"></i>
-                        <span>Collections</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/orders*') ? 'active' : '' }}" href="#">
-                        <i class="fas fa-shopping-bag"></i>
-                        <span>Orders</span>
-                        <span class="nav-badge">12</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/customers*') ? 'active' : '' }}" href="#">
-                        <i class="fas fa-users"></i>
-                        <span>Customers</span>
-                    </a>
-                </li>
+
             </ul>
         </nav>
 
-        <nav class="nav-section">
-            <div class="nav-section-title">Inventory</div>
-            <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/inventory*') ? 'active' : '' }}" href="#">
-                        <i class="fas fa-boxes-stacked"></i>
-                        <span>Stock Management</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}" href="#">
-                        <i class="fas fa-tags"></i>
-                        <span>Categories</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/suppliers*') ? 'active' : '' }}" href="#">
-                        <i class="fas fa-truck"></i>
-                        <span>Suppliers</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
 
-        <nav class="nav-section">
-            <div class="nav-section-title">Analytics</div>
-            <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/reports*') ? 'active' : '' }}" href="#">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Sales Reports</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/analytics*') ? 'active' : '' }}" href="#">
-                        <i class="fas fa-chart-pie"></i>
-                        <span>Analytics</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
 
         <nav class="nav-section">
             <div class="nav-section-title">Settings</div>
@@ -1151,7 +1229,7 @@
                     <button class="mobile-menu-toggle" id="menuToggle" type="button">
                         <i class="fas fa-bars"></i>
                     </button>
-                    
+
                     <div class="search-bar">
                         <i class="fas fa-search"></i>
                         <input type="text" placeholder="Search products, orders, customers...">
@@ -1162,12 +1240,12 @@
                     <button class="icon-btn" id="themeToggle" title="Toggle Theme" type="button">
                         <i class="fas fa-sun"></i>
                     </button>
-                    
+
                     <button class="icon-btn" title="Notifications" type="button">
                         <i class="fas fa-bell"></i>
                         <span class="badge">3</span>
                     </button>
-                    
+
                     <button class="icon-btn" title="Messages" type="button">
                         <i class="fas fa-envelope"></i>
                         <span class="badge">5</span>
@@ -1187,14 +1265,17 @@
             </div>
         </nav>
 
-        <!-- Toast Container -->
-        <div class="toast-container" id="toastContainer"></div>
+
 
         <!-- Main Content Area -->
         <main>
             @yield('content')
         </main>
     </div>
+
+    
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <!-- JavaScript -->
     <script>
@@ -1262,46 +1343,106 @@
             });
 
             // Toast Function (Global)
-            window.showToast = function(title, message, type = 'info') {
-                console.log('Showing toast:', title, message, type);
+            // Toast Function (Global) - with better error handling
+            window.showToast = function (title, message, type = 'info') {
+                //  console.log('showToast called:', { title, message, type });
+
                 const toastContainer = document.getElementById('toastContainer');
+                if (!toastContainer) {
+                    console.error('Toast container not found!');
+                    return;
+                }
+
                 const toast = document.createElement('div');
                 toast.className = `toast toast-${type}`;
-                
+
                 const icons = {
                     success: 'fa-check-circle',
                     warning: 'fa-exclamation-triangle',
                     danger: 'fa-times-circle',
                     info: 'fa-info-circle'
                 };
-                
+
                 toast.innerHTML = `
                     <div class="toast-icon">
-                        <i class="fas ${icons[type]}"></i>
+                        <i class="fas ${icons[type] || icons.info}"></i>
                     </div>
                     <div class="toast-body">
                         <div class="toast-title">${title}</div>
                         <div class="toast-message">${message}</div>
                     </div>
-                    <button class="alert-close" onclick="this.parentElement.remove()">
+                    <button class="alert-close" type="button">
                         <i class="fas fa-times"></i>
                     </button>
                 `;
-                
+
                 toastContainer.appendChild(toast);
-                
+                console.log('Toast appended to container');
+
+                // Auto remove after 5 seconds
                 setTimeout(() => {
-                    toast.remove();
+                    if (toast.parentElement) {
+                        toast.style.animation = 'slideOutRight 0.3s ease';
+                        setTimeout(() => toast.remove(), 300);
+                    }
                 }, 5000);
             };
 
+            // Add slideOut animation
+            // const style = document.createElement('style');
+            // style.textContent = `
+            //     @keyframes slideOutRight {
+            //         from {
+            //             transform: translateX(0);
+            //             opacity: 1;
+            //         }
+            //         to {
+            //             transform: translateX(400px);
+            //             opacity: 0;
+            //         }
+            //     }
+            // `;
+            // document.head.appendChild(style);
             // Alert close buttons
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('.alert-close')) {
-                    e.target.closest('.alert').remove();
+            // Alert and Toast close buttons - More specific handling
+            document.addEventListener('click', function (e) {
+                const closeBtn = e.target.closest('.alert-close');
+                if (closeBtn) {
+                    const alert = closeBtn.closest('.alert');
+                    const toast = closeBtn.closest('.toast');
+
+                    if (alert) {
+                        alert.remove();
+                    } else if (toast) {
+                        toast.remove();
+                    }
                 }
             });
         });
+    </script>
+
+        <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        @if (session('success'))
+            showToast('Success!', '{{ session('success') }}', 'success');
+        @endif
+
+        @if (session('error'))
+            showToast('Error!', '{{ session('error') }}', 'danger');
+        @endif
+
+        @if (session('warning'))
+            showToast('Warning!', '{{ session('warning') }}', 'warning');
+        @endif
+
+        @if (session('info'))
+            showToast('Info', '{{ session('info') }}', 'info');
+        @endif
+
+        @if ($errors->any())
+            showToast('Validation Error', 'Please fix the highlighted errors.', 'danger');
+        @endif
+    });
     </script>
 </body>
 

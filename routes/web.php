@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\JewelleryCategoryController;
 use Illuminate\Support\Facades\Artisan;
 
 Route::get('/migrate', function () {
@@ -26,4 +27,5 @@ Route::middleware(['auth', 'role:admin'])
         })->name('dashboard');
 
         // Add more admin routes here later
+        Route::resource('categories', JewelleryCategoryController::class);
     });
