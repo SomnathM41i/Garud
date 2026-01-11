@@ -1181,10 +1181,11 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
+                    <a class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}"
+                        href="{{ route('admin.products.index') }}">
                         <i class="fas fa-gem"></i>
                         <span>Jewelry Products</span>
-                        <span class="nav-badge">245</span>
+                        <!-- <span class="nav-badge">245</span> -->
                     </a>
                 </li>
 
