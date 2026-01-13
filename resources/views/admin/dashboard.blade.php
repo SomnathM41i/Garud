@@ -6,75 +6,107 @@
     <!-- Page Header -->
     <div class="page-header">
         <h1 class="page-title">Dashboard Overview</h1>
-        <p class="page-subtitle">Welcome back, {{ Auth::user()->name }}! Here's what's happening with your jewelry store today.</p>
+        <p class="page-subtitle">Welcome back, {{ Auth::user()->name }}! Here's what's happening with your jewelry store
+            today.</p>
     </div>
 
     {{-- Statistics Cards --}}
     <div class="stats-grid">
+
+        {{-- Total Customers --}}
         <div class="stat-card primary">
             <div class="stat-header">
                 <div class="stat-icon primary">
                     <i class="fas fa-users"></i>
                 </div>
                 <div class="stat-trend up">
-                    <i class="fas fa-arrow-up"></i> 12.5%
+                    @php
+                        $totalCustomers = App\Models\Customer::count();
+                        $lastMonthCustomers = App\Models\Customer::whereMonth('created_at', now()->subMonth()->month)->count();
+                        $customerTrend = $lastMonthCustomers ? round((($totalCustomers - $lastMonthCustomers) / $lastMonthCustomers) * 100, 1) : 0;
+                    @endphp
+                    <i class="fas fa-arrow-{{ $customerTrend >= 0 ? 'up' : 'down' }}"></i> {{ abs($customerTrend) }}%
                 </div>
             </div>
             <div class="stat-body">
                 <div class="stat-title">Total Customers</div>
-                <div class="stat-value">{{ App\Models\User::count() }}</div>
+                <div class="stat-value">{{ $totalCustomers }}</div>
             </div>
             <div class="stat-footer">Compared to last month</div>
         </div>
 
+        {{-- Total Revenue --}}
         <div class="stat-card success">
             <div class="stat-header">
                 <div class="stat-icon success">
                     <i class="fas fa-dollar-sign"></i>
                 </div>
                 <div class="stat-trend up">
-                    <i class="fas fa-arrow-up"></i> 8.2%
+                    @php
+                        $totalRevenue = App\Models\Order::where('status', 'completed')->sum('total_amount');
+                        $lastMonthRevenue = App\Models\Order::where('status', 'completed')
+                            ->whereMonth('created_at', now()->subMonth()->month)
+                            ->sum('total_amount');
+                        $revenueTrend = $lastMonthRevenue ? round((($totalRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100, 1) : 0;
+                    @endphp
+                    <i class="fas fa-arrow-{{ $revenueTrend >= 0 ? 'up' : 'down' }}"></i> {{ abs($revenueTrend) }}%
                 </div>
             </div>
             <div class="stat-body">
                 <div class="stat-title">Total Revenue</div>
-                <div class="stat-value">₹12.5L</div>
+                <div class="stat-value">₹{{ number_format($totalRevenue, 2) }}</div>
             </div>
             <div class="stat-footer">This month's earnings</div>
         </div>
 
+        {{-- Pending Orders --}}
         <div class="stat-card warning">
             <div class="stat-header">
                 <div class="stat-icon warning">
                     <i class="fas fa-shopping-bag"></i>
                 </div>
                 <div class="stat-trend down">
-                    <i class="fas fa-arrow-down"></i> 3.1%
+                    @php
+                        $pendingOrders = App\Models\Order::where('status', 'pending')->count();
+                        $prevPendingOrders = App\Models\Order::where('status', 'pending')
+                            ->whereMonth('created_at', now()->subMonth()->month)
+                            ->count();
+                        $pendingTrend = $prevPendingOrders ? round((($pendingOrders - $prevPendingOrders) / $prevPendingOrders) * 100, 1) : 0;
+                    @endphp
+                    <i class="fas fa-arrow-{{ $pendingTrend >= 0 ? 'up' : 'down' }}"></i> {{ abs($pendingTrend) }}%
                 </div>
             </div>
             <div class="stat-body">
                 <div class="stat-title">Pending Orders</div>
-                <div class="stat-value">24</div>
+                <div class="stat-value">{{ $pendingOrders }}</div>
             </div>
             <div class="stat-footer">Require attention</div>
         </div>
 
+        {{-- Jewelry Products --}}
         <div class="stat-card danger">
             <div class="stat-header">
                 <div class="stat-icon gold">
                     <i class="fas fa-gem"></i>
                 </div>
                 <div class="stat-trend up">
-                    <i class="fas fa-arrow-up"></i> 15.3%
+                    @php
+                        $totalProducts = App\Models\JewelleryProduct::count();
+                        $lastMonthProducts = App\Models\JewelleryProduct::whereMonth('created_at', now()->subMonth()->month)->count();
+                        $productTrend = $lastMonthProducts ? round((($totalProducts - $lastMonthProducts) / $lastMonthProducts) * 100, 1) : 0;
+                    @endphp
+                    <i class="fas fa-arrow-{{ $productTrend >= 0 ? 'up' : 'down' }}"></i> {{ abs($productTrend) }}%
                 </div>
             </div>
             <div class="stat-body">
                 <div class="stat-title">Jewelry Products</div>
-                <div class="stat-value">245</div>
+                <div class="stat-value">{{ $totalProducts }}</div>
             </div>
             <div class="stat-footer">In stock items</div>
         </div>
+
     </div>
+
 
     {{-- Alerts Section --}}
     <div class="card">
@@ -196,7 +228,8 @@
                     <label class="form-label" for="description">
                         Description
                     </label>
-                    <textarea id="description" class="form-control" rows="4" placeholder="Enter product description..."></textarea>
+                    <textarea id="description" class="form-control" rows="4"
+                        placeholder="Enter product description..."></textarea>
                 </div>
 
                 {{-- Checkboxes --}}
@@ -218,7 +251,8 @@
 
                 {{-- Buttons --}}
                 <div class="form-group" style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <button type="button" class="btn btn-gold" onclick="showToast('Success', 'Product saved successfully!', 'success')">
+                    <button type="button" class="btn btn-gold"
+                        onclick="showToast('Success', 'Product saved successfully!', 'success')">
                         <i class="fas fa-save"></i> Save Product
                     </button>
                     <button type="button" class="btn btn-primary" onclick="showToast('Info', 'Draft saved!', 'info')">
@@ -230,7 +264,8 @@
                     <button type="button" class="btn btn-outline">
                         <i class="fas fa-times"></i> Cancel
                     </button>
-                    <button type="button" class="btn btn-danger" onclick="showToast('Error', 'Failed to delete product!', 'danger')">
+                    <button type="button" class="btn btn-danger"
+                        onclick="showToast('Error', 'Failed to delete product!', 'danger')">
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
@@ -390,16 +425,20 @@
                 Click the buttons below to see toast notifications in action:
             </p>
             <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                <button class="btn btn-success" onclick="showToast('Success!', 'Your action was completed successfully.', 'success')">
+                <button class="btn btn-success"
+                    onclick="showToast('Success!', 'Your action was completed successfully.', 'success')">
                     Show Success Toast
                 </button>
-                <button class="btn btn-warning" onclick="showToast('Warning!', 'Please review this action carefully.', 'warning')">
+                <button class="btn btn-warning"
+                    onclick="showToast('Warning!', 'Please review this action carefully.', 'warning')">
                     Show Warning Toast
                 </button>
-                <button class="btn btn-danger" onclick="showToast('Error!', 'Something went wrong. Please try again.', 'danger')">
+                <button class="btn btn-danger"
+                    onclick="showToast('Error!', 'Something went wrong. Please try again.', 'danger')">
                     Show Error Toast
                 </button>
-                <button class="btn btn-info" onclick="showToast('Information', 'Here is some useful information for you.', 'info')">
+                <button class="btn btn-info"
+                    onclick="showToast('Information', 'Here is some useful information for you.', 'info')">
                     Show Info Toast
                 </button>
             </div>

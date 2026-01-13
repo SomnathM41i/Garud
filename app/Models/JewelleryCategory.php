@@ -10,4 +10,9 @@ class JewelleryCategory extends Model
         'category_name',
         'status'
     ];
+
+    public function products()
+    {
+        return $this->hasMany(JewelleryProduct::class, 'category_id');
+    }
 }

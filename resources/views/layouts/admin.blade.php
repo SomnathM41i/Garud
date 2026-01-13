@@ -1189,6 +1189,33 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/cart*') ? 'active' : '' }}"
+                        href="{{ route('admin.cart.index') }}">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Cart</span>
+                        <!-- <span class="nav-badge">245</span> -->
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/orders*') ? 'active' : '' }}"
+                        href="{{ route('admin.orders.index') }}">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Orders</span>
+                        <!-- <span class="nav-badge">245</span> -->
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin.reports.profit_loss') ? 'active' : '' }}"
+                        href="{{ route('admin.reports.profit_loss') }}">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>profit loss</span>
+                        <!-- <span class="nav-badge">245</span> -->
+                    </a>
+                </li>
+
             </ul>
         </nav>
 

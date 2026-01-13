@@ -25,4 +25,16 @@ class JewelleryProduct extends Model
     {
         return $this->belongsTo(JewelleryCategory::class, 'category_id');
     }
+
+    // Product can appear in many order items
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'product_id');
+    }
+
+    // Product can be in many carts
+    public function carts()
+    {
+        return $this->hasMany(Cart::class, 'product_id');
+    }
 }

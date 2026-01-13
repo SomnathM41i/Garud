@@ -62,22 +62,40 @@
                                         <span class="badge badge-danger">Inactive</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="d-flex gap-1">
+                                    {{-- Add to Cart --}}
+                                    @if($product->stock_quantity > 0 && $product->status === 'active')
+                                    <form action="{{ route('admin.cart.store') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <input type="hidden" name="price" value="{{ $product->price }}">
+                                        <input type="hidden" name="making_charges" value="{{ $product->making_charges }}">
+                                        <input type="hidden" name="quantity" value="1"> {{-- ✅ FIX --}}
+                                        
+                                        <button class="btn btn-success btn-sm" title="Add to Cart">
+                                            <i class="fas fa-cart-plus"></i>
+                                        </button>
+                                    </form>
+                                    @endif
+
+                                    {{-- Edit --}}
                                     <a href="{{ route('admin.products.edit', $product->id) }}"
                                         class="btn btn-outline-primary btn-sm" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
-                                    <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST"
-                                        class="d-inline-block"
-                                        onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                    {{-- Delete --}}
+                                    <form action="{{ route('admin.products.destroy', $product->id) }}"
+                                        method="POST"
+                                        onsubmit="return confirm('Are you sure?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete">
+                                        <button class="btn btn-outline-danger btn-sm" title="Delete">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
                                 </td>
+
                             </tr>
                         @empty
                             <tr>

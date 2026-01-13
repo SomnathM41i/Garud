@@ -4,6 +4,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JewelleryCategoryController;
 use App\Http\Controllers\JewelleryProductController;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\CartController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\ReportController;
+
+
 use Illuminate\Support\Facades\Artisan;
 
 Route::get('/migrate', function () {
@@ -32,4 +39,11 @@ Route::middleware(['auth', 'role:admin'])
 
         // Products
         Route::resource('products', JewelleryProductController::class);
+
+        Route::resource('customers', CustomerController::class);
+        Route::resource('cart', CartController::class);
+        Route::resource('orders', OrderController::class);
+        Route::resource('payments', PaymentController::class);
+
+        Route::get('reports/profit-loss', [ReportController::class, 'profitLoss'])->name('reports.profit_loss');
     });
