@@ -59,7 +59,7 @@ class OrderController extends Controller
 
             /** Create Order */
             $order = Order::create([
-                'invoice_number' => 'INV-' . strtoupper(Str::random(8)),
+                'invoice_number' => 'Garud-' . strtoupper(Str::random(8)),
                 'customer_id' => $customer->id,
                 'total_amount' => 0,
                 'total_profit' => 0,
@@ -72,13 +72,14 @@ class OrderController extends Controller
 
             $totalAmount = 0;
             $totalProfit = 0;
+            //  dd($cartItems);
 
             /** Order Items */
             foreach ($cartItems as $cart) {
-
+                //  dd($cartItems, $cart->product->price);
                 $subtotal = ($cart->price + $cart->making_charges) * $cart->quantity;
                 $profit = (($cart->price - $cart->product->price) + $cart->making_charges) * $cart->quantity;
-
+                //   dd($profit, $subtotal);
 
                 OrderItem::create([
                     'order_id' => $order->id,

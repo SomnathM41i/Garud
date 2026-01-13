@@ -54,7 +54,7 @@
                             @php
                                 $orderCost = 0;
                                 foreach ($order->items as $item) {
-                                    $orderCost += ($item->cost_price + $item->making_charges) * $item->quantity;
+                                    $orderCost += $item->cost_price * $item->quantity;
                                 }
                                 $orderProfit = $order->total_amount - $orderCost;
                             @endphp

@@ -63,8 +63,8 @@
                                     <tr>
                                         <th>Product</th>
                                         <th>Qty</th>
-                                        <th>Price</th>
-                                        <th>Making</th>
+                                        <th>Price (Per Item)</th>
+                                        <th>Making Cost (Per Item)</th>
                                         <th>Subtotal</th>
                                     </tr>
                                 </thead>

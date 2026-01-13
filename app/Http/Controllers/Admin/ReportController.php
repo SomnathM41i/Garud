@@ -18,8 +18,10 @@ class ReportController extends Controller
         $totalRevenue = $orders->sum('total_amount');
         $totalProfit = $orders->sum('total_profit');
 
-        $totalCost = $totalRevenue - $totalProfit;
-
+        $totalCost = $orders->sum(function ($order) {
+            return $order->total_amount - $order->total_profit;
+        });
+        //   dd($orders);
         return view('admin.reports.profit_loss', compact(
             'orders',
             'totalRevenue',

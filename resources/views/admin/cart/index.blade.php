@@ -33,7 +33,7 @@
                             <th>Code</th>
                             <th>Quantity</th>
                             <th>Price</th>
-                            <th>Making Charges</th>
+                            <th>Making Cost (Per Item)</th>
                             <th>Total</th>
                             <th>Actions</th>
                         </tr>
@@ -70,10 +70,10 @@
                                                 </td>
 
                                                 <td>
-                                                    ₹{{ number_format(
-                                ($item->price * $item->quantity) + $item->making_charges,
-                                2
-                            ) }}
+₹{{ number_format(
+   ($item->price + $item->making_charges) * $item->quantity,
+    2
+) }}
                                                 </td>
 
                                                 <td class="d-flex gap-1">
@@ -111,7 +111,7 @@
                     ₹{{ number_format(
                 $cartItems->sum(
                     fn($i) =>
-                    ($i->price * $i->quantity) + $i->making_charges
+                    ($i->price + $i->making_charges) * $i->quantity
                 ),
                 2
             ) }}

@@ -52,8 +52,8 @@
                             <th>#</th>
                             <th>Product</th>
                             <th>Qty</th>
-                            <th>Price</th>
-                            <th>Making</th>
+                            <th>Price (Per Item)</th>
+                            <!-- <th>Making Cost (Per Item)</th> -->
                             <th>Subtotal</th>
                         </tr>
                     </thead>
@@ -69,8 +69,8 @@
                                     <small>{{ $item->product->product_code }}</small>
                                 </td>
                                 <td>{{ $item->quantity }}</td>
-                                <td>₹{{ number_format($item->price, 2) }}</td>
-                                <td>₹{{ number_format($item->making_charges, 2) }}</td>
+                                <td>₹{{ number_format($item->price + $item->making_charges, 2) }}</td>
+                                <!-- <td>₹{{ number_format($item->making_charges, 2) }}</td> -->
                                 <td>
                                     <strong>₹{{ number_format($subtotal, 2) }}</strong>
                                 </td>

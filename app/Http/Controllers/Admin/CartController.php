@@ -17,7 +17,7 @@ class CartController extends Controller
         $cartItems = Cart::with('product')
             ->where('sales_user_id', auth()->id())
             ->get();
-
+        //dd($cartItems);
         return view('admin.cart.index', compact('cartItems'));
     }
 
