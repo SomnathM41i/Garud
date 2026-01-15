@@ -33,7 +33,6 @@
                             <th>Code</th>
                             <th>Quantity</th>
                             <th>Price</th>
-                            <th>Making Cost (Per Item)</th>
                             <th>Total</th>
                             <th>Actions</th>
                         </tr>
@@ -41,60 +40,59 @@
 
                     <tbody>
                         @forelse ($cartItems as $item)
-                                            <tr>
-                                                <td>
-                                                    <strong>{{ $item->product->product_name }}</strong>
-                                                </td>
+                            <tr>
+                                <td>
+                                    <strong>{{ $item->product->product_name }}</strong>
+                                </td>
 
-                                                <td>{{ $item->product->product_code }}</td>
+                                <td>{{ $item->product->product_code }}</td>
 
-                                                <td>
-                                                    <form action="{{ route('admin.cart.update', $item->id) }}" method="POST"
-                                                        class="d-flex gap-1">
-                                                        @csrf
-                                                        @method('PUT')
+                                <td>
+                                    <form action="{{ route('admin.cart.update', $item->id) }}" method="POST"
+                                        class="d-flex gap-1">
+                                        @csrf
+                                        @method('PUT')
 
-                                                        <input type="number" name="quantity" value="{{ $item->quantity }}" min="1"
-                                                            class="form-control form-control-sm" style="width: 70px">
+                                        <input type="number"
+                                            name="quantity"
+                                            value="{{ $item->quantity }}"
+                                            min="1"
+                                            class="form-control form-control-sm"
+                                            style="width: 70px">
+                                </td>
 
-                                                </td>
+                                <td>
+                                    <input type="number"
+                                        step="0.01"
+                                        name="selling_price"
+                                        value="{{ $item->selling_price }}"
+                                        class="form-control form-control-sm"
+                                        style="width: 90px">
+                                </td>
 
-                                                <td>
-                                                    <input type="number" step="0.01" name="price" value="{{ $item->price }}"
-                                                        class="form-control form-control-sm" style="width: 90px">
-                                                </td>
+                                <td>
+                                    ₹{{ number_format($item->subtotal, 2) }}
+                                </td>
 
-                                                <td>
-                                                    <input type="number" step="0.01" name="making_charges" value="{{ $item->making_charges }}"
-                                                        class="form-control form-control-sm" style="width: 90px">
-                                                </td>
+                                <td class="d-flex gap-1">
+                                    <button class="btn btn-success btn-sm">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    </form>
 
-                                                <td>
-₹{{ number_format(
-   ($item->price + $item->making_charges) * $item->quantity,
-    2
-) }}
-                                                </td>
-
-                                                <td class="d-flex gap-1">
-                                                    <button class="btn btn-success btn-sm">
-                                                        <i class="fas fa-save"></i>
-                                                    </button>
-                                                    </form>
-
-                                                    <form action="{{ route('admin.cart.destroy', $item->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="btn btn-danger btn-sm"
-                                                            onclick="return confirm('Remove item from cart?')">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </td>
-                                            </tr>
+                                    <form action="{{ route('admin.cart.destroy', $item->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Remove item from cart?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-4">
+                                <td colspan="6" class="text-center text-muted py-4">
                                     Cart is empty
                                 </td>
                             </tr>
@@ -108,13 +106,7 @@
             <div class="card-footer d-flex justify-content-between align-items-center">
                 <strong>
                     Grand Total:
-                    ₹{{ number_format(
-                $cartItems->sum(
-                    fn($i) =>
-                    ($i->price + $i->making_charges) * $i->quantity
-                ),
-                2
-            ) }}
+                    ₹{{ number_format($cartItems->sum('subtotal'), 2) }}
                 </strong>
 
                 <a href="{{ route('admin.orders.create') }}" class="btn btn-gold">
@@ -123,6 +115,7 @@
             </div>
         @endif
     </div>
+
 
 
 

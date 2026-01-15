@@ -12,13 +12,26 @@ return new class extends Migration {
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sales_user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('product_id')->constrained('jewellery_products')->onDelete('cascade');
+
+            // Sales user (who is creating the order)
+            $table->foreignId('sales_user_id')
+                ->constrained('users')
+                ->onDelete('cascade');
+
+            // Product
+            $table->foreignId('product_id')
+                ->constrained('jewellery_products')
+                ->onDelete('cascade');
+
+            // Quantity selected
             $table->integer('quantity')->default(1);
-            $table->decimal('price', 12, 2);
-            $table->decimal('making_charges', 10, 2)->default(0);
+
+            // Snapshot of selling price at cart time
+            $table->decimal('selling_price', 12, 2);
+
             $table->timestamps();
         });
+
     }
 
     /**

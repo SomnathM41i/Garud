@@ -51,15 +51,19 @@ class OrderController extends Controller
 
         DB::transaction(function () use ($request) {
 
-            /** Customer */
+            /** ======================
+             * CUSTOMER
+             * ===================== */
             $customer = Customer::firstOrCreate(
                 ['phone' => $request->phone],
                 ['name' => $request->customer_name]
             );
 
-            /** Create Order */
+            /** ======================
+             * ORDER
+             * ===================== */
             $order = Order::create([
-                'invoice_number' => 'Garud-' . strtoupper(Str::random(8)),
+                'invoice_number' => 'GARUD-' . strtoupper(Str::random(8)),
                 'customer_id' => $customer->id,
                 'total_amount' => 0,
                 'total_profit' => 0,
@@ -72,29 +76,36 @@ class OrderController extends Controller
 
             $totalAmount = 0;
             $totalProfit = 0;
-            //  dd($cartItems);
 
-            /** Order Items */
+            /** ======================
+             * ORDER ITEMS
+             * ===================== */
             foreach ($cartItems as $cart) {
-                //  dd($cartItems, $cart->product->price);
-                $subtotal = ($cart->price + $cart->making_charges) * $cart->quantity;
-                $profit = (($cart->price - $cart->product->price) + $cart->making_charges) * $cart->quantity;
-                //   dd($profit, $subtotal);
+
+                $sellingPrice = $cart->selling_price;               // what customer pays
+                $costPrice = $cart->product->cost_price;              // base product cost
+                $handlingCost = $cart->product->handling_cost;                                   // can be extended later
+
+                $subtotal = $sellingPrice * $cart->quantity;
+                $profit = ($sellingPrice - ($costPrice + $handlingCost))
+                    * $cart->quantity;
 
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $cart->product_id,
                     'quantity' => $cart->quantity,
-                    'price' => $cart->price,
-                    'cost_price' => $cart->product->price,
-                    'making_charges' => $cart->making_charges,
+                    'selling_price' => $sellingPrice,
+                    'cost_price' => $costPrice,
+                    'handling_cost' => $handlingCost,
                 ]);
 
                 $totalAmount += $subtotal;
                 $totalProfit += $profit;
             }
 
-            /** Payment */
+            /** ======================
+             * PAYMENT
+             * ===================== */
             Payment::create([
                 'order_id' => $order->id,
                 'amount' => $totalAmount,
@@ -102,19 +113,25 @@ class OrderController extends Controller
                 'status' => 'completed',
             ]);
 
-            /** Deduct Stock */
+            /** ======================
+             * STOCK DEDUCTION
+             * ===================== */
             foreach ($order->items as $item) {
                 $item->product->decrement('stock_quantity', $item->quantity);
             }
 
-            /** Final Order Update */
+            /** ======================
+             * FINAL ORDER UPDATE
+             * ===================== */
             $order->update([
                 'total_amount' => $totalAmount,
                 'total_profit' => $totalProfit,
                 'status' => 'completed',
             ]);
 
-            /** Clear Cart */
+            /** ======================
+             * CLEAR CART
+             * ===================== */
             Cart::where('sales_user_id', auth()->id())->delete();
         });
 

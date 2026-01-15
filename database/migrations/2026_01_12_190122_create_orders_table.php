@@ -12,13 +12,23 @@ return new class extends Migration {
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+
             $table->string('invoice_number', 50)->unique();
-            $table->foreignId('customer_id')->constrained()->onDelete('cascade');
-            $table->decimal('total_amount', 12, 2);
+
+            $table->foreignId('customer_id')
+                ->constrained()
+                ->onDelete('cascade');
+
+            // Snapshot totals
+            $table->decimal('total_amount', 12, 2)->default(0);
             $table->decimal('total_profit', 12, 2)->default(0);
-            $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
+
+            $table->enum('status', ['pending', 'completed', 'cancelled'])
+                ->default('pending');
+
             $table->timestamps();
         });
+
     }
 
     /**

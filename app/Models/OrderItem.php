@@ -10,26 +10,62 @@ class OrderItem extends Model
         'order_id',
         'product_id',
         'quantity',
-        'price',
-        'cost_price',
-        'making_charges',
+
+        'selling_price',          // SELLING PRICE (per item)
+        'cost_price',     // PURCHASE COST (per item)
+        'handling_cost',  // MAKING / LABOUR COST (per item)
     ];
 
-    // Item belongs to order
+    /**
+     * Relationships
+     */
     public function order()
     {
         return $this->belongsTo(Order::class);
     }
 
-    // Item belongs to product
     public function product()
     {
         return $this->belongsTo(JewelleryProduct::class, 'product_id');
     }
 
-    // Profit for this item (helper)
+    /**
+     * =====================
+     * BUSINESS LOGIC
+     * =====================
+     */
+
+    /**
+     * Cost per item
+     */
+    // public function getUnitCostAttribute()
+    // {
+    //     return $this->cost_price + $this->handling_cost;
+    // }
+
+    /**
+     * Total cost for this item
+     */
+    public function getTotalCostAttribute()
+    {
+        return $this->unit_cost * $this->quantity;
+    }
+
+    /**
+     * Profit for this item
+     */
+    // public function getProfitAttribute()
+    // {
+    //     return ($this->price - $this->unit_cost) * $this->quantity;
+    // }
+
+    public function getUnitCostAttribute()
+    {
+        return $this->cost_price + $this->handling_cost;
+    }
+
     public function getProfitAttribute()
     {
-        return (($this->price - $this->cost_price) * $this->quantity);
+        return ($this->selling_price - $this->unit_cost) * $this->quantity;
     }
 }

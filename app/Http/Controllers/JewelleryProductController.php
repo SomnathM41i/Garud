@@ -32,21 +32,27 @@ class JewelleryProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'product_code' => 'required|string|max:50|unique:jewellery_products,product_code',
             'product_name' => 'required|string|max:150',
             'category_id' => 'required|exists:jewellery_categories,id',
             'metal_type' => 'required|string|max:50',
             'purity' => 'nullable|string|max:20',
             'weight' => 'nullable|numeric',
-            'making_charges' => 'nullable|numeric',
-            'price' => 'required|numeric',
-            'stock_quantity' => 'nullable|integer',
+
+            // COST STRUCTURE
+            'cost_price' => 'required|numeric|min:0',
+            'handling_cost' => 'nullable|numeric|min:0',
+
+            // SELLING
+            'selling_price' => 'required|numeric|min:0',
+
+            'stock_quantity' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
             'status' => 'required|in:active,inactive',
         ]);
 
-        JewelleryProduct::create($request->all());
+        JewelleryProduct::create($validated);
 
         return redirect()
             ->route('admin.products.index')
@@ -67,26 +73,32 @@ class JewelleryProductController extends Controller
      */
     public function update(Request $request, JewelleryProduct $product)
     {
-        $request->validate([
+        $validated = $request->validate([
             'product_code' => [
                 'required',
                 'string',
                 'max:50',
-                Rule::unique('jewellery_products')->ignore($product->id),
+                Rule::unique('jewellery_products', 'product_code')->ignore($product->id),
             ],
             'product_name' => 'required|string|max:150',
             'category_id' => 'required|exists:jewellery_categories,id',
             'metal_type' => 'required|string|max:50',
             'purity' => 'nullable|string|max:20',
             'weight' => 'nullable|numeric',
-            'making_charges' => 'nullable|numeric',
-            'price' => 'required|numeric',
-            'stock_quantity' => 'nullable|integer',
+
+            // COST STRUCTURE
+            'cost_price' => 'required|numeric|min:0',
+            'handling_cost' => 'nullable|numeric|min:0',
+
+            // SELLING
+            'selling_price' => 'required|numeric|min:0',
+
+            'stock_quantity' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
             'status' => 'required|in:active,inactive',
         ]);
 
-        $product->update($request->all());
+        $product->update($validated);
 
         return redirect()
             ->route('admin.products.index')

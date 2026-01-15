@@ -13,12 +13,17 @@ class JewelleryProduct extends Model
         'metal_type',
         'purity',
         'weight',
-        'making_charges',
-        'price',
+
+        'cost_price',            // COST PRICE (what you pay)
+        'handling_cost',   // INTERNAL COST (labour etc.)
+
+        'selling_price',    // DEFAULT SELLING PRICE
+
         'stock_quantity',
         'description',
         'status',
     ];
+
 
     // Relation to category
     public function category()

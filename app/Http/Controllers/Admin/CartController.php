@@ -17,7 +17,7 @@ class CartController extends Controller
         $cartItems = Cart::with('product')
             ->where('sales_user_id', auth()->id())
             ->get();
-        //dd($cartItems);
+
         return view('admin.cart.index', compact('cartItems'));
     }
 
@@ -29,18 +29,17 @@ class CartController extends Controller
         $request->validate([
             'product_id' => 'required|exists:jewellery_products,id',
             'quantity' => 'required|integer|min:1',
-            'price' => 'required|numeric|min:0',
-            'making_charges' => 'nullable|numeric|min:0',
         ]);
 
         $product = JewelleryProduct::findOrFail($request->product_id);
 
+        // Stock check
         if ($request->quantity > $product->stock_quantity) {
             return back()->with('error', 'Not enough stock available.');
         }
 
         $cart = Cart::where('sales_user_id', auth()->id())
-            ->where('product_id', $request->product_id)
+            ->where('product_id', $product->id)
             ->first();
 
         if ($cart) {
@@ -59,10 +58,9 @@ class CartController extends Controller
 
             Cart::create([
                 'sales_user_id' => auth()->id(),
-                'product_id' => $request->product_id,
+                'product_id' => $product->id,
                 'quantity' => $request->quantity,
-                'price' => $request->price,
-                'making_charges' => $request->making_charges ?? 0,
+                'selling_price' => $product->selling_price, // ✅ FROM PRODUCT
             ]);
         }
 
@@ -70,14 +68,12 @@ class CartController extends Controller
     }
 
     /**
-     * Update cart item (quantity / price / making charges)
+     * Update cart item quantity
      */
     public function update(Request $request, Cart $cart)
     {
         $request->validate([
             'quantity' => 'required|integer|min:1',
-            'price' => 'required|numeric|min:0',
-            'making_charges' => 'nullable|numeric|min:0',
         ]);
 
         // Security: only owner can update
@@ -85,10 +81,13 @@ class CartController extends Controller
             abort(403);
         }
 
+        // Stock validation
+        if ($request->quantity > $cart->product->stock_quantity) {
+            return back()->with('error', 'Quantity exceeds available stock.');
+        }
+
         $cart->update([
             'quantity' => $request->quantity,
-            'price' => $request->price,
-            'making_charges' => $request->making_charges ?? 0,
         ]);
 
         return back()->with('success', 'Cart updated successfully.');

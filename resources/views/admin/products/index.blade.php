@@ -31,7 +31,8 @@
                             <th>Name</th>
                             <th>Category</th>
                             <th>Metal</th>
-                            <th>Price</th>
+                            <th>Selling Price</th>
+                            <th>Handling Cost</th>
                             <th>Stock</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -45,16 +46,29 @@
                                 <td>{{ $product->product_name }}</td>
                                 <td>{{ $product->category->category_name ?? '-' }}</td>
                                 <td>{{ $product->metal_type }}</td>
-                                <td>₹{{ number_format($product->price, 2) }}</td>
+
+                                {{-- Selling Price --}}
+                                <td>₹{{ number_format($product->selling_price, 2) }}</td>
+
+                                {{-- Handling / Making Cost --}}
+                                <td>₹{{ number_format($product->handling_cost, 2) }}</td>
+
+                                {{-- Stock --}}
                                 <td>
                                     @if($product->stock_quantity > 10)
-                                        <span class="badge badge-success">In Stock: {{ $product->stock_quantity }}</span>
+                                        <span class="badge badge-success">
+                                            In Stock: {{ $product->stock_quantity }}
+                                        </span>
                                     @elseif($product->stock_quantity > 0)
-                                        <span class="badge badge-warning">Low Stock: {{ $product->stock_quantity }}</span>
+                                        <span class="badge badge-warning">
+                                            Low Stock: {{ $product->stock_quantity }}
+                                        </span>
                                     @else
                                         <span class="badge badge-danger">Out of Stock</span>
                                     @endif
                                 </td>
+
+                                {{-- Status --}}
                                 <td>
                                     @if($product->status === 'active')
                                         <span class="badge badge-success">Active</span>
@@ -62,25 +76,28 @@
                                         <span class="badge badge-danger">Inactive</span>
                                     @endif
                                 </td>
+
+                                {{-- Actions --}}
                                 <td class="d-flex gap-1">
+
                                     {{-- Add to Cart --}}
                                     @if($product->stock_quantity > 0 && $product->status === 'active')
-                                    <form action="{{ route('admin.cart.store') }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                        <input type="hidden" name="price" value="{{ $product->price }}">
-                                        <input type="hidden" name="making_charges" value="{{ $product->making_charges }}">
-                                        <input type="hidden" name="quantity" value="1"> {{-- ✅ FIX --}}
-                                        
-                                        <button class="btn btn-success btn-sm" title="Add to Cart">
-                                            <i class="fas fa-cart-plus"></i>
-                                        </button>
-                                    </form>
+                                        <form action="{{ route('admin.cart.store') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                            <input type="hidden" name="selling_price" value="{{ $product->selling_price }}">
+                                            <input type="hidden" name="handling_cost" value="{{ $product->handling_cost }}">
+                                            <input type="hidden" name="quantity" value="1">
+
+                                            <button class="btn btn-success btn-sm" title="Add to Cart">
+                                                <i class="fas fa-cart-plus"></i>
+                                            </button>
+                                        </form>
                                     @endif
 
                                     {{-- Edit --}}
                                     <a href="{{ route('admin.products.edit', $product->id) }}"
-                                        class="btn btn-outline-primary btn-sm" title="Edit">
+                                    class="btn btn-outline-primary btn-sm" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
@@ -95,11 +112,10 @@
                                         </button>
                                     </form>
                                 </td>
-
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center">No products found.</td>
+                                <td colspan="10" class="text-center">No products found.</td>
                             </tr>
                         @endforelse
                     </tbody>

@@ -64,33 +64,40 @@
                                         <th>Product</th>
                                         <th>Qty</th>
                                         <th>Price (Per Item)</th>
-                                        <th>Making Cost (Per Item)</th>
                                         <th>Subtotal</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
                                     @php $grandTotal = 0; @endphp
 
                                     @forelse($cartItems as $item)
                                         @php
-                                            $subtotal = ($item->price + $item->making_charges) * $item->quantity;
-                                            $grandTotal += $subtotal;
+                                            $grandTotal += $item->subtotal;
                                         @endphp
                                         <tr>
                                             <td>
                                                 <strong>{{ $item->product->product_name }}</strong><br>
                                                 <small>{{ $item->product->product_code }}</small>
                                             </td>
+
                                             <td>{{ $item->quantity }}</td>
-                                            <td>₹{{ number_format($item->price, 2) }}</td>
-                                            <td>₹{{ number_format($item->making_charges, 2) }}</td>
+
+                                            {{-- ✅ selling_price --}}
                                             <td>
-                                                <strong>₹{{ number_format($subtotal, 2) }}</strong>
+                                                ₹{{ number_format($item->selling_price, 2) }}
+                                            </td>
+
+                                            {{-- ✅ subtotal accessor --}}
+                                            <td>
+                                                <strong>
+                                                    ₹{{ number_format($item->subtotal, 2) }}
+                                                </strong>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5" class="text-center">
+                                            <td colspan="4" class="text-center">
                                                 Cart is empty
                                             </td>
                                         </tr>
@@ -99,8 +106,10 @@
 
                                 <tfoot>
                                     <tr>
-                                        <th colspan="4" class="text-end">Total</th>
-                                        <th>₹{{ number_format($grandTotal, 2) }}</th>
+                                        <th colspan="3" class="text-end">Total</th>
+                                        <th>
+                                            ₹{{ number_format($grandTotal, 2) }}
+                                        </th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -141,9 +150,7 @@
                         <i class="fas fa-arrow-left"></i> Back to Cart
                     </a>
                 </div>
-
             </form>
-
         </div>
     </div>
 

@@ -32,6 +32,7 @@
                             <th>Invoice</th>
                             <th>Customer</th>
                             <th>Total Amount</th>
+                            <th>Profit</th>
                             <th>Status</th>
                             <th>Date</th>
                             <th class="text-end">Actions</th>
@@ -56,6 +57,11 @@
                                     ₹{{ number_format($order->total_amount, 2) }}
                                 </td>
 
+                                {{-- ✅ Uses Order::getProfitAttribute() --}}
+                                <td>
+                                    ₹{{ number_format($order->profit, 2) }}
+                                </td>
+
                                 <td>
                                     @if($order->status === 'completed')
                                         <span class="badge badge-success">Completed</span>
@@ -78,7 +84,7 @@
                                     </a>
 
                                     {{-- Delete (only if not completed) --}}
-                                    @if($order->status !== 'completed')
+                                    @if(!$order->isCompleted())
                                         <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST"
                                             class="d-inline-block"
                                             onsubmit="return confirm('Are you sure you want to delete this order?')">
@@ -93,13 +99,12 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-3">
+                                <td colspan="7" class="text-center py-3">
                                     No orders found.
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
-
                 </table>
             </div>
         </div>

@@ -53,14 +53,13 @@
                             <th>Product</th>
                             <th>Qty</th>
                             <th>Price (Per Item)</th>
-                            <!-- <th>Making Cost (Per Item)</th> -->
                             <th>Subtotal</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($order->items as $key => $item)
                             @php
-                                $subtotal = ($item->price + $item->making_charges) * $item->quantity;
+                                $subtotal = $item->selling_price * $item->quantity;
                             @endphp
                             <tr>
                                 <td>{{ $key + 1 }}</td>
@@ -69,10 +68,13 @@
                                     <small>{{ $item->product->product_code }}</small>
                                 </td>
                                 <td>{{ $item->quantity }}</td>
-                                <td>₹{{ number_format($item->price + $item->making_charges, 2) }}</td>
-                                <!-- <td>₹{{ number_format($item->making_charges, 2) }}</td> -->
                                 <td>
-                                    <strong>₹{{ number_format($subtotal, 2) }}</strong>
+                                    ₹{{ number_format($item->selling_price, 2) }}
+                                </td>
+                                <td>
+                                    <strong>
+                                        ₹{{ number_format($subtotal, 2) }}
+                                    </strong>
                                 </td>
                             </tr>
                         @endforeach
@@ -83,8 +85,14 @@
             {{-- ================= TOTALS ================= --}}
             <div class="row">
                 <div class="col-md-6">
-                    <p><strong>Payment Method:</strong> {{ strtoupper($order->payment->payment_method) }}</p>
-                    <p><strong>Payment Status:</strong> {{ ucfirst($order->payment->status) }}</p>
+                    <p>
+                        <strong>Payment Method:</strong>
+                        {{ strtoupper($order->payment->payment_method) }}
+                    </p>
+                    <p>
+                        <strong>Payment Status:</strong>
+                        {{ ucfirst($order->payment->status) }}
+                    </p>
                 </div>
 
                 <div class="col-md-6 text-end">

@@ -10,19 +10,32 @@ class Cart extends Model
         'sales_user_id',
         'product_id',
         'quantity',
-        'price',
-        'making_charges',
+
+        'selling_price',   // PRICE CUSTOMER PAYS (per item)
     ];
 
-    // Cart item belongs to product
+    /**
+     * Relationships
+     */
     public function product()
     {
         return $this->belongsTo(JewelleryProduct::class, 'product_id');
     }
 
-    // Cart belongs to sales user
     public function user()
     {
         return $this->belongsTo(User::class, 'sales_user_id');
     }
+
+    /**
+     * =====================
+     * CALCULATED HELPERS
+     * =====================
+     */
+
+    public function getSubtotalAttribute()
+    {
+        return $this->selling_price * $this->quantity;
+    }
+
 }
