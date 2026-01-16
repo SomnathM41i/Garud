@@ -1257,11 +1257,6 @@
                     <button class="mobile-menu-toggle" id="menuToggle" type="button">
                         <i class="fas fa-bars"></i>
                     </button>
-
-                    <div class="search-bar">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search products, orders, customers...">
-                    </div>
                 </div>
 
                 <div class="navbar-actions">
@@ -1269,7 +1264,7 @@
                         <i class="fas fa-sun"></i>
                     </button>
 
-                    <button class="icon-btn" title="Notifications" type="button">
+                    <!-- <button class="icon-btn" title="Notifications" type="button">
                         <i class="fas fa-bell"></i>
                         <span class="badge">3</span>
                     </button>
@@ -1277,7 +1272,7 @@
                     <button class="icon-btn" title="Messages" type="button">
                         <i class="fas fa-envelope"></i>
                         <span class="badge">5</span>
-                    </button>
+                    </button> -->
 
                     <div class="user-profile">
                         <div class="user-avatar">

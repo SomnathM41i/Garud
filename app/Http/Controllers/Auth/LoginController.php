@@ -27,6 +27,17 @@ class LoginController extends Controller
      */
     protected $redirectTo = '/home';
 
+    protected function redirectTo()
+    {
+        // Check the authenticated user's role
+        if (auth()->user()->role === 'admin') {
+            return route('admin.dashboard'); // Redirect to admin dashboard
+        }
+
+        return route('home'); // Redirect normal users to home
+    }
+
+
     /**
      * Create a new controller instance.
      *
