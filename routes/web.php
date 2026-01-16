@@ -18,6 +18,15 @@ Route::get('/migrate', function () {
     return 'Migrations ran successfully!';
 });
 
+Route::get('/migrate-fresh', function () {
+    // Run fresh migrations
+    Artisan::call('migrate:fresh', [
+        '--force' => true, // required to run in production safely
+    ]);
+
+    return 'Fresh migrations ran successfully!';
+});
+
 Route::get('/', function () {
     return view('welcome');
 });
