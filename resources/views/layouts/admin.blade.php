@@ -1161,79 +1161,83 @@
                 <span>Admin Panel</span>
             </div>
         </div>
+        @if(auth()->user()->isAdmin())
+            <nav class="nav-section">
+                <div class="nav-section-title">Main Menu</div>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}"
+                            href="{{ route('admin.dashboard') }}">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}"
+                            href="{{ route('admin.categories.index') }}">
+                            <i class="fas fa-list"></i>
+                            <span>Jewellery Categories</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}"
+                            href="{{ route('admin.products.index') }}">
+                            <i class="fas fa-gem"></i>
+                            <span>Jewelry Products</span>
+                            <!-- <span class="nav-badge">245</span> -->
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('admin/cart*') ? 'active' : '' }}"
+                            href="{{ route('admin.cart.index') }}">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Cart</span>
+                            <!-- <span class="nav-badge">245</span> -->
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('admin/orders*') ? 'active' : '' }}"
+                            href="{{ route('admin.orders.index') }}">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Orders</span>
+                            <!-- <span class="nav-badge">245</span> -->
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('admin.reports.profit_loss') ? 'active' : '' }}"
+                            href="{{ route('admin.reports.profit_loss') }}">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>profit loss</span>
+                            <!-- <span class="nav-badge">245</span> -->
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+        @endif
 
         <nav class="nav-section">
-            <div class="nav-section-title">Main Menu</div>
+            @if(auth()->user()->isAdmin())
+                <div class="nav-section-title">Settings</div>
+            @endif
             <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}"
-                        href="{{ route('admin.dashboard') }}">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}"
-                        href="{{ route('admin.categories.index') }}">
-                        <i class="fas fa-list"></i>
-                        <span>Jewellery Categories</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}"
-                        href="{{ route('admin.products.index') }}">
-                        <i class="fas fa-gem"></i>
-                        <span>Jewelry Products</span>
-                        <!-- <span class="nav-badge">245</span> -->
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/cart*') ? 'active' : '' }}"
-                        href="{{ route('admin.cart.index') }}">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span>Cart</span>
-                        <!-- <span class="nav-badge">245</span> -->
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/orders*') ? 'active' : '' }}"
-                        href="{{ route('admin.orders.index') }}">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span>Orders</span>
-                        <!-- <span class="nav-badge">245</span> -->
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin.reports.profit_loss') ? 'active' : '' }}"
-                        href="{{ route('admin.reports.profit_loss') }}">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span>profit loss</span>
-                        <!-- <span class="nav-badge">245</span> -->
-                    </a>
-                </li>
-
-            </ul>
-        </nav>
-
-
-
-        <nav class="nav-section">
-            <div class="nav-section-title">Settings</div>
-            <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/settings*') ? 'active' : '' }}" href="#">
-                        <i class="fas fa-gear"></i>
-                        <span>Settings</span>
-                    </a>
-                </li>
+                @if(auth()->user()->isAdmin())
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('admin/settings*') ? 'active' : '' }}"
+                            href="{{ route('admin.settings.index') }}">
+                            <i class="fas fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('home') }}">
                         <i class="fas fa-arrow-left"></i>
-                        <span>Back to Store</span>
+                        <span>Back to Home</span>
                     </a>
                 </li>
                 <li class="nav-item">

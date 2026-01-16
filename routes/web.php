@@ -54,5 +54,20 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('orders', OrderController::class);
         Route::resource('payments', PaymentController::class);
 
+        Route::resource('settings', HomeController::class);
+
         Route::get('reports/profit-loss', [ReportController::class, 'profitLoss'])->name('reports.profit_loss');
     });
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::resource('settings', HomeController::class);
+
+    // Update role (Admin only)
+    Route::post('/settings/update-role/{id}', [HomeController::class, 'updateRole'])
+        ->name('settings.updateRole');
+
+    // Update profile
+    Route::post('/settings/update-profile', [HomeController::class, 'updateProfile'])
+        ->name('settings.updateProfile');
+});
