@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Artisan;
 
 
 Route::get('/make-admin/{id}', function ($id) {
-    $user = User::findOrFail($id);
+    $user = App\Models\User::findOrFail($id);
     $user->role = 'admin';
     $user->save();
 
