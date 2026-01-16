@@ -6,15 +6,13 @@
     <!-- Page Header -->
     <div class="page-header">
         <h1 class="page-title">Create Category</h1>
-        <p class="page-subtitle">Welcome back, {{ Auth::user()->name }}! Here's what's happening with your jewelry store
-            today.</p>
     </div>
 
     {{-- Forms Section --}}
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">
-                <i class="fas fa-plus"></i> Add Jewellery Category
+                <i class="fas fa-plus"></i> Add Jewellers Category
             </h3>
         </div>
 

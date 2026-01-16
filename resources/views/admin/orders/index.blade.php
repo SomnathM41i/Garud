@@ -5,12 +5,8 @@
 @section('content')
     <!-- Page Header -->
     <div class="page-header">
-        <h1 class="page-title">Dashboard Overview</h1>
-        <p class="page-subtitle">Welcome back, {{ Auth::user()->name }}! Here's what's happening with your jewelry store
-            today.</p>
+        <h1 class="page-title">Jewellers Products orders</h1>
     </div>
-
-
 
     {{-- Table Section --}}
     <div class="card">

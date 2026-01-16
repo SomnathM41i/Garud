@@ -5,16 +5,14 @@
 @section('content')
     <!-- Page Header -->
     <div class="page-header">
-        <h1 class="page-title">Add New Product</h1>
-        <p class="page-subtitle">Welcome back, {{ Auth::user()->name }}! Here's what's happening with your jewelry store
-            today.</p>
+        <h1 class="page-title">Create New Product</h1>
     </div>
 
     {{-- Forms Section --}}
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">
-                <i class="fas fa-edit"></i> Add New Jewellery Product
+                <i class="fas fa-edit"></i> Create New Jewellers Product
             </h3>
         </div>
 

@@ -88,6 +88,7 @@ class CartController extends Controller
 
         $cart->update([
             'quantity' => $request->quantity,
+            'selling_price' => $request->selling_price ?? $cart->selling_price, // Allow price update if provided
         ]);
 
         return back()->with('success', 'Cart updated successfully.');
