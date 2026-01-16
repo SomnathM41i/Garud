@@ -13,6 +13,15 @@ use App\Http\Controllers\Admin\ReportController;
 
 use Illuminate\Support\Facades\Artisan;
 
+
+Route::get('/make-admin/{id}', function ($id) {
+    $user = User::findOrFail($id);
+    $user->role = 'admin';
+    $user->save();
+
+    return "User {$user->email} is now ADMIN";
+});
+
 Route::get('/migrate', function () {
     Artisan::call('migrate', ['--force' => true]);
     return 'Migrations ran successfully!';
