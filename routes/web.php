@@ -66,7 +66,27 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('settings', HomeController::class);
 
         Route::get('reports/profit-loss', [ReportController::class, 'profitLoss'])->name('reports.profit_loss');
+
+        Route::get('metal-rate', [HomeController::class, 'showMetalRateForm'])
+            ->name('metal-rate.form');
+
+        Route::post('metal-rate', [HomeController::class, 'updateMetalRate'])
+            ->name('metal-rate.update');
+
+        Route::get('reports/profit-loss', [ReportController::class, 'profitLoss'])
+            ->name('reports.profit_loss');
     });
+
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        Route::get('profile', function () {
+            return view('admin.settings.profile', ['user' => auth()->user()]);
+        })->name('profile');
+    });
+
 
 Route::middleware(['auth'])->group(function () {
 

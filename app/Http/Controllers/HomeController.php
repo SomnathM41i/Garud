@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\MetalRate;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -72,4 +74,72 @@ class HomeController extends Controller
 
         return back()->with('success', 'Profile updated successfully.');
     }
+
+
+    /**
+     * Show metal rate update form (ADMIN ONLY)
+     */
+    public function showMetalRateForm()
+    {
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $today = Carbon::today();
+
+        // Get today's rates
+        $goldToday = MetalRate::today('gold')->first();
+        $silverToday = MetalRate::today('silver')->first();
+
+        // If today's rate not found, get latest old rate
+        $goldRate = $goldToday ?? MetalRate::where('metal', 'gold')
+            ->orderBy('rate_date', 'desc')
+            ->first();
+
+        $silverRate = $silverToday ?? MetalRate::where('metal', 'silver')
+            ->orderBy('rate_date', 'desc')
+            ->first();
+
+        return view('admin.settings.metal-rate', [
+            'goldRate' => $goldRate,
+            'silverRate' => $silverRate,
+            'today' => $today->format('d M Y'),
+            'isToday' => [
+                'gold' => (bool) $goldToday,
+                'silver' => (bool) $silverToday,
+            ]
+        ]);
+    }
+
+    /**
+     * Update metal rate (ADMIN ONLY)
+     */
+    public function updateMetalRate(Request $request)
+    {
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $request->validate([
+            'metal' => 'required|in:gold,silver',
+            'rate_per_gram' => 'required|numeric|min:0',
+        ]);
+
+        $today = Carbon::today()->toDateString();
+
+        MetalRate::updateOrCreate(
+            [
+                'metal' => $request->metal,
+                'rate_date' => $today,
+            ],
+            [
+                'rate_per_gram' => $request->rate_per_gram,
+            ]
+        );
+
+        return redirect()
+            ->route('admin.metal-rate.form')
+            ->with('success', ucfirst($request->metal) . ' rate updated successfully.');
+    }
+
 }

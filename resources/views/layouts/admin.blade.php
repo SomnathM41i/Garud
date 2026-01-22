@@ -1164,92 +1164,120 @@
         @if(auth()->user()->isAdmin())
             <nav class="nav-section">
                 <div class="nav-section-title">Main Menu</div>
+
                 <ul class="nav">
+                    {{-- Dashboard --}}
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}"
+                        <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
                             href="{{ route('admin.dashboard') }}">
                             <i class="fas fa-home"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
+
+                    {{-- Categories --}}
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}"
+                        <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
                             href="{{ route('admin.categories.index') }}">
                             <i class="fas fa-list"></i>
                             <span>Jewellery Categories</span>
                         </a>
                     </li>
 
+                    {{-- Products --}}
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}"
+                        <a class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
                             href="{{ route('admin.products.index') }}">
                             <i class="fas fa-gem"></i>
                             <span>Jewelry Products</span>
-                            <!-- <span class="nav-badge">245</span> -->
                         </a>
                     </li>
 
+                    {{-- Cart --}}
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('admin/cart*') ? 'active' : '' }}"
+                        <a class="nav-link {{ request()->routeIs('admin.cart.*') ? 'active' : '' }}"
                             href="{{ route('admin.cart.index') }}">
                             <i class="fas fa-shopping-cart"></i>
                             <span>Cart</span>
-                            <!-- <span class="nav-badge">245</span> -->
                         </a>
                     </li>
 
+                    {{-- Orders --}}
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('admin/orders*') ? 'active' : '' }}"
+                        <a class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"
                             href="{{ route('admin.orders.index') }}">
-                            <i class="fas fa-shopping-cart"></i>
+                            <i class="fas fa-shopping-bag"></i>
                             <span>Orders</span>
-                            <!-- <span class="nav-badge">245</span> -->
                         </a>
                     </li>
 
+                    {{-- Profit / Loss Report --}}
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('admin.reports.profit_loss') ? 'active' : '' }}"
+                        <a class="nav-link {{ request()->routeIs('admin.reports.profit_loss') ? 'active' : '' }}"
                             href="{{ route('admin.reports.profit_loss') }}">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span>profit loss</span>
-                            <!-- <span class="nav-badge">245</span> -->
+                            <i class="fas fa-chart-line"></i>
+                            <span>Profit & Loss</span>
                         </a>
                     </li>
-
                 </ul>
             </nav>
         @endif
+
 
         <nav class="nav-section">
             @if(auth()->user()->isAdmin())
                 <div class="nav-section-title">Settings</div>
             @endif
+
             <ul class="nav">
+
+                {{-- Admin Settings --}}
                 @if(auth()->user()->isAdmin())
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('admin/settings*') ? 'active' : '' }}"
+                        <a class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"
                             href="{{ route('admin.settings.index') }}">
                             <i class="fas fa-gear"></i>
                             <span>Settings</span>
                         </a>
                     </li>
+
+                    {{-- Metal Rate --}}
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.metal-rate.*') ? 'active' : '' }}"
+                            href="{{ route('admin.metal-rate.form') }}">
+                            <i class="fas fa-coins"></i>
+                            <span>Metal Rate</span>
+                        </a>
+                    </li>
                 @endif
+
+                {{-- Profile (Admin + User) --}}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('home') }}">
-                        <i class="fas fa-arrow-left"></i>
-                        <span>Back to Home</span>
+                    <a class="nav-link
+                {{ request()->routeIs('profile') || request()->routeIs('admin.profile') ? 'active' : '' }}"
+                        href="{{ auth()->user()->isAdmin() ? route('admin.profile') : route('profile') }}">
+                        <i class="fas fa-user"></i>
+                        <span>My Profile</span>
                     </a>
                 </li>
+
+                {{-- Logout --}}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('logout') }}"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="fas fa-right-from-bracket"></i>
                         <span>Logout</span>
                     </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
                 </li>
+
             </ul>
         </nav>
+
+
     </aside>
 
     <!-- Main Content -->
