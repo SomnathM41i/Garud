@@ -28,6 +28,8 @@
                             <th>Product</th>
                             <th>Code</th>
                             <th>Quantity</th>
+                            <th>Total Weight</th>
+                            <th>Average Purity</th>
                             <th>Price</th>
                             <th>Total</th>
                             <th>Actions</th>
@@ -36,6 +38,13 @@
 
                     <tbody>
                         @forelse ($cartItems as $item)
+                            @php
+                                // Per item calculations
+                                $itemWeight = $item->product->weight * $item->quantity;
+                                $itemPurity = $item->product->purity; // if you want just product purity
+                                $itemSubtotal = $item->quantity * $item->selling_price;
+                            @endphp
+
                             <tr>
                                 <td>
                                     <strong>{{ $item->product->product_name }}</strong>
@@ -49,25 +58,25 @@
                                         @csrf
                                         @method('PUT')
 
-                                        <input type="number"
-                                            name="quantity"
-                                            value="{{ $item->quantity }}"
-                                            min="1"
-                                            class="form-control form-control-sm"
-                                            style="width: 70px">
+                                        <input type="number" name="quantity" value="{{ $item->quantity }}" min="1"
+                                            class="form-control form-control-sm" style="width: 70px">
                                 </td>
 
                                 <td>
-                                    <input type="number"
-                                        step="0.01"
-                                        name="selling_price"
-                                        value="{{ $item->selling_price }}"
-                                        class="form-control form-control-sm"
-                                        style="width: 90px">
+                                    {{ $itemWeight }} g
                                 </td>
 
                                 <td>
-                                    ₹{{ number_format($item->subtotal, 2) }}
+                                    {{ $itemPurity }} %
+                                </td>
+
+                                <td>
+                                    <input type="number" step="0.01" name="selling_price" value="{{ $item->selling_price }}"
+                                        class="form-control form-control-sm" style="width: 90px">
+                                </td>
+
+                                <td>
+                                    ₹{{ number_format($itemSubtotal, 2) }}
                                 </td>
 
                                 <td class="d-flex gap-1">
@@ -88,21 +97,39 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
+                                <td colspan="8" class="text-center text-muted py-4">
                                     Cart is empty
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
+
                 </table>
             </div>
         </div>
 
         @if($cartItems->count())
+            @php
+                $grandTotal = 0;
+                $grandWeight = 0;
+                $totalQuantity = 0;
+                $totalPuritySum = 0;
+
+                foreach ($cartItems as $item) {
+                    $grandTotal += $item->selling_price * $item->quantity;
+                    $grandWeight += $item->product->weight * $item->quantity;
+                    $totalPuritySum += $item->product->purity * $item->quantity;
+                    $totalQuantity += $item->quantity;
+                }
+
+                $averagePurity = $totalQuantity > 0 ? $totalPuritySum / $totalQuantity : 0;
+            @endphp
+
             <div class="card-footer d-flex justify-content-between align-items-center">
                 <strong>
-                    Grand Total:
-                    ₹{{ number_format($cartItems->sum('subtotal'), 2) }}
+                    Grand Total: ₹{{ number_format($grandTotal, 2) }} |
+                    Total Weight: {{ $grandWeight }} g |
+                    Average Purity: {{ number_format($averagePurity, 2) }} %
                 </strong>
 
                 <a href="{{ route('admin.orders.create') }}" class="btn btn-gold">
@@ -110,6 +137,7 @@
                 </a>
             </div>
         @endif
+
     </div>
 
 

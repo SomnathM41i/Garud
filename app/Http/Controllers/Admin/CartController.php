@@ -14,12 +14,30 @@ class CartController extends Controller
      */
     public function index()
     {
+        // Get cart items with product details
         $cartItems = Cart::with('product')
             ->where('sales_user_id', auth()->id())
             ->get();
 
-        return view('admin.cart.index', compact('cartItems'));
+        // Initialize totals
+        $totalWeight = 0;
+        $totalPurity = 0;
+
+        foreach ($cartItems as $item) {
+            // Multiply product weight by quantity
+            $totalWeight += $item->product->weight * $item->quantity;
+
+            // Weighted purity calculation (optional: weighted by quantity)
+            $totalPurity += $item->product->purity * $item->quantity;
+        }
+
+        // Optional: calculate average purity if needed
+        $averagePurity = $totalWeight > 0 ? ($totalPurity / array_sum($cartItems->pluck('quantity')->toArray())) : 0;
+
+        // Pass totals to view
+        return view('admin.cart.index', compact('cartItems', 'totalWeight', 'averagePurity'));
     }
+
 
     /**
      * Add product to cart

@@ -8,6 +8,70 @@
         <h1 class="page-title">Jewellers Products</h1>
     </div>
 
+
+    {{-- Calculate totals by purity --}}
+    @php
+        $metalPurityTotals = [];
+
+        foreach ($products as $product) {
+            if ($product->stock_quantity > 0 && $product->status === 'active') {
+                $weight = $product->weight * $product->stock_quantity;
+                $metal = $product->metal_type;
+                $purity = $product->purity;
+
+                // Initialize array for this metal if not exists
+                if (!isset($metalPurityTotals[$metal])) {
+                    $metalPurityTotals[$metal] = [];
+                }
+
+                // Add weight for this purity under the metal
+                $metalPurityTotals[$metal][$purity] = ($metalPurityTotals[$metal][$purity] ?? 0) + $weight;
+            }
+        }
+
+        // Calculate overall grand total
+        $grandTotalWeight = 0;
+        foreach ($metalPurityTotals as $metalTotals) {
+            foreach ($metalTotals as $weight) {
+                $grandTotalWeight += $weight;
+            }
+        }
+    @endphp
+
+
+    {{-- Purity Summary Cards --}}
+    @if(count($metalPurityTotals))
+        <div class="row mb-3">
+            @foreach($metalPurityTotals as $metal => $purityTotals)
+                @foreach($purityTotals as $purity => $weight)
+                    <div class="col-md-3 col-sm-6 mb-2">
+                        <div class="card text-white bg-primary h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ $metal }} - {{ $purity }}% Purity</h5>
+                                <p class="card-text" style="font-size: 1.2rem;">
+                                    {{ number_format($weight, 2) }} g
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endforeach
+
+            {{-- Grand Total Card --}}
+            <div class="col-md-3 col-sm-6 mb-2">
+                <div class="card text-white bg-success h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Grand Total</h5>
+                        <p class="card-text" style="font-size: 1.2rem;">
+                            {{ number_format($grandTotalWeight, 2) }} g
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+
     {{-- Table Section --}}
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
