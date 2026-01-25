@@ -1255,7 +1255,7 @@
                 <li class="nav-item">
                     <a class="nav-link
                 {{ request()->routeIs('profile') || request()->routeIs('admin.profile') ? 'active' : '' }}"
-                        href="{{ auth()->user()->isAdmin() ? route('admin.profile') : route('profile') }}">
+                        href="{{ auth()->user()->isAdmin() ? route('admin.profile') : route('admin.profile') }}">
                         <i class="fas fa-user"></i>
                         <span>My Profile</span>
                     </a>
