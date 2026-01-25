@@ -28,8 +28,11 @@
                             <th>Name</th>
                             <th>Category</th>
                             <th>Metal</th>
+                            <th>Weight</th>
+                            <th>Purity</th>
                             <th>Selling Price</th>
                             <th>Handling Cost</th>
+                            <th>Cost Price</th>
                             <th>Stock</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -43,12 +46,14 @@
                                 <td>{{ $product->product_name }}</td>
                                 <td>{{ $product->category->category_name ?? '-' }}</td>
                                 <td>{{ $product->metal_type }}</td>
-
+                                <td>{{ $product->weight }} g</td>
+                                <td>{{ $product->purity }}%</td>
                                 {{-- Selling Price --}}
                                 <td>₹{{ number_format($product->selling_price, 2) }}</td>
 
                                 {{-- Handling / Making Cost --}}
                                 <td>₹{{ number_format($product->handling_cost, 2) }}</td>
+                                <td>₹{{ number_format($product->cost_price, 2) }}</td>
 
                                 {{-- Stock --}}
                                 <td>
@@ -94,13 +99,12 @@
 
                                     {{-- Edit --}}
                                     <a href="{{ route('admin.products.edit', $product->id) }}"
-                                    class="btn btn-outline-primary btn-sm" title="Edit">
+                                        class="btn btn-outline-primary btn-sm" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
                                     {{-- Delete --}}
-                                    <form action="{{ route('admin.products.destroy', $product->id) }}"
-                                        method="POST"
+                                    <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST"
                                         onsubmit="return confirm('Are you sure?')">
                                         @csrf
                                         @method('DELETE')

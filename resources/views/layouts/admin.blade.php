@@ -1243,8 +1243,8 @@
 
                     {{-- Metal Rate --}}
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.metal-rate.*') ? 'active' : '' }}"
-                            href="{{ route('admin.metal-rate.form') }}">
+                        <a class="nav-link {{ request()->routeIs('admin.metal-rates.*') ? 'active' : '' }}"
+                            href="{{ route('admin.metal-rates.index') }}">
                             <i class="fas fa-coins"></i>
                             <span>Metal Rate</span>
                         </a>
@@ -1499,6 +1499,7 @@
             @endif
     });
     </script>
+    @yield('scripts')
 </body>
 
 </html>

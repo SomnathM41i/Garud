@@ -60,7 +60,7 @@ class CartController extends Controller
                 'sales_user_id' => auth()->id(),
                 'product_id' => $product->id,
                 'quantity' => $request->quantity,
-                'selling_price' => $product->selling_price, // ✅ FROM PRODUCT
+                'selling_price' => $product->selling_price, // FROM PRODUCT
             ]);
         }
 

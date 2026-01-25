@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JewelleryProduct;
 use App\Models\JewelleryCategory;
+use App\Models\MetalRate;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -15,6 +16,7 @@ class JewelleryProductController extends Controller
     public function index()
     {
         $products = JewelleryProduct::with('category')->latest()->get();
+        //dd($products->all());
         return view('admin.products.index', compact('products'));
     }
 
@@ -24,7 +26,15 @@ class JewelleryProductController extends Controller
     public function create()
     {
         $categories = JewelleryCategory::where('status', 'active')->get();
-        return view('admin.products.create', compact('categories'));
+
+        // Get the latest metal rates
+        $latestDate = MetalRate::max('rate_date');
+
+        $metalRates = MetalRate::where('rate_date', $latestDate)
+            ->select('metal', 'purity_percent', 'rate_per_gram')
+            ->get();
+        // dd($metalRates);
+        return view('admin.products.create', compact('categories', 'metalRates'));
     }
 
     /**
@@ -32,6 +42,7 @@ class JewelleryProductController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request->all());
         $validated = $request->validate([
             'product_code' => 'required|string|max:50|unique:jewellery_products,product_code',
             'product_name' => 'required|string|max:150',
@@ -44,7 +55,7 @@ class JewelleryProductController extends Controller
             'cost_price' => 'required|numeric|min:0',
             'handling_cost' => 'nullable|numeric|min:0',
 
-            // SELLING
+            // SELLING PRICE
             'selling_price' => 'required|numeric|min:0',
 
             'stock_quantity' => 'nullable|integer|min:0',
@@ -65,7 +76,14 @@ class JewelleryProductController extends Controller
     public function edit(JewelleryProduct $product)
     {
         $categories = JewelleryCategory::where('status', 'active')->get();
-        return view('admin.products.edit', compact('product', 'categories'));
+
+        $latestDate = MetalRate::max('rate_date');
+        // Fetch today's metal rates (all columns)
+        $metalRates = MetalRate::where('rate_date', $latestDate)
+            ->select('metal', 'purity_percent', 'rate_per_gram')
+            ->get();
+
+        return view('admin.products.edit', compact('product', 'categories', 'metalRates'));
     }
 
     /**
@@ -90,7 +108,7 @@ class JewelleryProductController extends Controller
             'cost_price' => 'required|numeric|min:0',
             'handling_cost' => 'nullable|numeric|min:0',
 
-            // SELLING
+            // SELLING PRICE
             'selling_price' => 'required|numeric|min:0',
 
             'stock_quantity' => 'nullable|integer|min:0',

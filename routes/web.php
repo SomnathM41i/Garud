@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JewelleryCategoryController;
 use App\Http\Controllers\JewelleryProductController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\MetalRateController;
 use App\Http\Controllers\Admin\CartController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
@@ -62,16 +63,12 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('cart', CartController::class);
         Route::resource('orders', OrderController::class);
         Route::resource('payments', PaymentController::class);
-
+        Route::resource('metal-rates', MetalRateController::class);
         Route::resource('settings', HomeController::class);
 
         Route::get('reports/profit-loss', [ReportController::class, 'profitLoss'])->name('reports.profit_loss');
 
-        Route::get('metal-rate', [HomeController::class, 'showMetalRateForm'])
-            ->name('metal-rate.form');
 
-        Route::post('metal-rate', [HomeController::class, 'updateMetalRate'])
-            ->name('metal-rate.update');
 
         Route::get('reports/profit-loss', [ReportController::class, 'profitLoss'])
             ->name('reports.profit_loss');

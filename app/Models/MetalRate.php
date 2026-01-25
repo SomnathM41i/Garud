@@ -10,22 +10,30 @@ class MetalRate extends Model
 
     protected $fillable = [
         'metal',
+        'purity_percent',
         'rate_per_gram',
         'rate_date',
     ];
 
     protected $casts = [
         'rate_date' => 'date',
+        'purity_percent' => 'float',
+        'rate_per_gram' => 'float',
     ];
 
     /**
-     * Scope: get today's rate for a metal
+     * Scope: get today's rate for metal + purity
      */
-    public function scopeToday($query, $metal)
+    public function scopeToday($query, $metal, $purityPercent = null)
     {
-        return $query
+        $query
             ->whereRaw('LOWER(metal) = ?', [strtolower($metal)])
             ->whereDate('rate_date', now()->toDateString());
-    }
 
+        if ($purityPercent !== null) {
+            $query->where('purity_percent', $purityPercent);
+        }
+
+        return $query;
+    }
 }
