@@ -11,10 +11,19 @@
     {{-- Products Table --}}
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title mb-0"><i class="fas fa-gem me-2"></i> Jewellery Products</h3>
-            <a href="{{ route('admin.products.create') }}" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus me-1"></i> New Product
-            </a>
+            <h3 class="card-title mb-0">
+                <i class="fas fa-gem me-2"></i> Jewellery Products
+            </h3>
+
+            <div class="d-flex gap-2">
+                <a href="{{ route('admin.metal-rates.index') }}" class="btn btn-warning btn-sm">
+                    <i class="fas fa-coins me-1"></i> Update Metal Rate
+                </a>
+
+                <a href="{{ route('admin.products.create') }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus me-1"></i> New Product
+                </a>
+            </div>
         </div>
 
         <div class="card-body p-0">

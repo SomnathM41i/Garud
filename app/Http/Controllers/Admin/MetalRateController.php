@@ -73,7 +73,7 @@ class MetalRateController extends Controller
         );
 
         return redirect()
-            ->route('admin.metal-rates.index')
+            ->route('admin.products.index')
             ->with('success', 'Metal rate updated successfully.');
     }
 
