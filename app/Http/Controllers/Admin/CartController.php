@@ -4,40 +4,27 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\MetalRate;
 use App\Models\JewelleryProduct;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
     /**
-     * View cart items for logged-in sales user
+     * View cart items
      */
     public function index()
     {
-        // Get cart items with product details
         $cartItems = Cart::with('product')
             ->where('sales_user_id', auth()->id())
             ->get();
 
-        // Initialize totals
-        $totalWeight = 0;
-        $totalPurity = 0;
+        $totalAmount = $cartItems->sum(function ($item) {
+            return $item->subtotal;
+        });
 
-        foreach ($cartItems as $item) {
-            // Multiply product weight by quantity
-            $totalWeight += $item->product->weight * $item->quantity;
-
-            // Weighted purity calculation (optional: weighted by quantity)
-            $totalPurity += $item->product->purity * $item->quantity;
-        }
-
-        // Optional: calculate average purity if needed
-        $averagePurity = $totalWeight > 0 ? ($totalPurity / array_sum($cartItems->pluck('quantity')->toArray())) : 0;
-
-        // Pass totals to view
-        return view('admin.cart.index', compact('cartItems', 'totalWeight', 'averagePurity'));
+        return view('admin.cart.index', compact('cartItems', 'totalAmount'));
     }
-
 
     /**
      * Add product to cart
@@ -51,11 +38,20 @@ class CartController extends Controller
 
         $product = JewelleryProduct::findOrFail($request->product_id);
 
+        $goldRateRow = MetalRate::latestByPurity('gold', $product->purity_percent)->first();
+
+        if (!$goldRateRow) {
+            return back()->with('error', 'Gold rate not available.');
+        }
+
+        $todayGoldRate = $goldRateRow->rate_per_gram;
+
         // Stock check
         if ($request->quantity > $product->stock_quantity) {
             return back()->with('error', 'Not enough stock available.');
         }
 
+        // Check if product already in cart
         $cart = Cart::where('sales_user_id', auth()->id())
             ->where('product_id', $product->id)
             ->first();
@@ -78,15 +74,26 @@ class CartController extends Controller
                 'sales_user_id' => auth()->id(),
                 'product_id' => $product->id,
                 'quantity' => $request->quantity,
-                'selling_price' => $product->selling_price, // FROM PRODUCT
+
+                /* ===== SNAPSHOT (per unit only) ===== */
+                'gross_weight' => $product->gross_weight,
+                'net_weight' => $product->net_weight,
+                'fine_gold_weight' => $product->fine_gold_weight,
+                'purity_percent' => $product->purity_percent,
+
+                'gold_rate' => $todayGoldRate,
+                'gold_value' => $product->cost_price,
+                'making_charge' => $product->making_charge ?? 0,
+                'selling_price' => $product->cost_price + ($product->making_charge ?? 0),
             ]);
+
         }
 
         return back()->with('success', 'Product added to cart.');
     }
 
     /**
-     * Update cart item quantity
+     * Update quantity
      */
     public function update(Request $request, Cart $cart)
     {
@@ -94,30 +101,26 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        // Security: only owner can update
         if ($cart->sales_user_id !== auth()->id()) {
             abort(403);
         }
 
-        // Stock validation
         if ($request->quantity > $cart->product->stock_quantity) {
             return back()->with('error', 'Quantity exceeds available stock.');
         }
 
         $cart->update([
             'quantity' => $request->quantity,
-            'selling_price' => $request->selling_price ?? $cart->selling_price, // Allow price update if provided
         ]);
 
         return back()->with('success', 'Cart updated successfully.');
     }
 
     /**
-     * Remove item from cart
+     * Remove item
      */
     public function destroy(Cart $cart)
     {
-        // Security: only owner can delete
         if ($cart->sales_user_id !== auth()->id()) {
             abort(403);
         }

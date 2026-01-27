@@ -11,7 +11,7 @@
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">
-                <i class="fas fa-edit"></i> Create New Jewellers Product
+                <i class="fas fa-edit"></i> Create New Jewellery Product
             </h3>
         </div>
 
@@ -60,61 +60,60 @@
                     @error('metal_type')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                {{-- Purity (Dependent on Metal) --}}
+                {{-- Purity --}}
                 <div class="form-group">
                     <label class="form-label">Purity (%)</label>
-                    <select name="purity" id="purity" class="form-control @error('purity') is-invalid @enderror">
+                    <select name="purity_percent" id="purity_percent"
+                        class="form-control @error('purity_percent') is-invalid @enderror">
                         <option value="">Select purity</option>
                     </select>
-                    @error('purity')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    @error('purity_percent')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                {{-- Weight --}}
+                {{-- Gross Weight --}}
                 <div class="form-group">
-                    <label class="form-label">Weight (grams)</label>
-                    <input type="number" step="0.01" name="weight" id="weight"
-                        class="form-control @error('weight') is-invalid @enderror">
-                    @error('weight')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    <label class="form-label">Gross Weight (grams)</label>
+                    <input type="number" step="0.001" name="gross_weight" id="gross_weight"
+                        class="form-control @error('gross_weight') is-invalid @enderror" value="{{ old('gross_weight') }}">
+                    @error('gross_weight')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                {{-- Handling Cost --}}
+                {{-- Stone Weight --}}
                 <div class="form-group">
-                    <label class="form-label">Handling / Making Cost</label>
-                    <div class="input-group">
-                        <input type="number" step="0.01" name="handling_cost" id="handling_cost"
-                            class="form-control @error('handling_cost') is-invalid @enderror" value="0">
-                        <span class="input-group-text">₹</span>
-                    </div>
-                    @error('handling_cost')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    <label class="form-label">Stone Weight (grams)</label>
+                    <input type="number" step="0.001" name="stone_weight" id="stone_weight"
+                        class="form-control @error('stone_weight') is-invalid @enderror"
+                        value="{{ old('stone_weight', 0) }}">
+                    @error('stone_weight')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                {{-- COST PRICE (Auto from metal rate × weight) --}}
+                {{-- Making Charge --}}
+                <div class="form-group">
+                    <label class="form-label">Making Charge (₹)</label>
+                    <input type="number" step="0.01" name="making_charge" id="making_charge"
+                        class="form-control @error('making_charge') is-invalid @enderror"
+                        value="{{ old('making_charge', 0) }}">
+                    @error('making_charge')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+
+                {{-- Cost Price (auto) --}}
                 <div class="form-group">
                     <label class="form-label">Cost Price (Metal Value)</label>
-                    <div class="input-group">
-                        <input type="number" step="0.01" name="cost_price" id="cost_price"
-                            class="form-control @error('cost_price') is-invalid @enderror">
-                        <span class="input-group-text">₹</span>
-                    </div>
+                    <input type="number" step="0.01" name="cost_price" id="cost_price"
+                        class="form-control @error('cost_price') is-invalid @enderror" readonly>
                     @error('cost_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                {{-- Selling Price --}}
-                <div class="form-group">
-                    <label class="form-label">Selling Price</label>
-                    <div class="input-group">
-                        <input type="number" step="0.01" name="selling_price" id="selling_price"
-                            class="form-control @error('selling_price') is-invalid @enderror" readonly>
-                        <span class="input-group-text">₹</span>
-                    </div>
-                    @error('selling_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
+                {{-- Fine Gold Weight (auto) --}}
+                <input type="hidden" name="net_weight" id="net_weight">
+                <input type="hidden" name="fine_gold_weight" id="fine_gold_weight">
 
                 {{-- Stock Quantity --}}
                 <div class="form-group">
                     <label class="form-label">Stock Quantity</label>
                     <input type="number" name="stock_quantity"
-                        class="form-control @error('stock_quantity') is-invalid @enderror" value="0">
+                        class="form-control @error('stock_quantity') is-invalid @enderror"
+                        value="{{ old('stock_quantity', 0) }}">
                     @error('stock_quantity')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
@@ -122,7 +121,7 @@
                 <div class="form-group">
                     <label class="form-label">Description</label>
                     <textarea name="description" rows="4"
-                        class="form-control @error('description') is-invalid @enderror"></textarea>
+                        class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
                     @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
@@ -153,53 +152,55 @@
 @section('scripts')
     <script>
         const metalRates = @json($metalRates);
-        console.log(metalRates);
 
-        const metal = document.getElementById('metal_type');
-        const purity = document.getElementById('purity');
-        const weight = document.getElementById('weight');
-        const handling = document.getElementById('handling_cost');
-        const selling = document.getElementById('selling_price');
+        const metalEl = document.getElementById('metal_type');
+        const purityEl = document.getElementById('purity_percent');
+        const grossEl = document.getElementById('gross_weight');
+        const stoneEl = document.getElementById('stone_weight');
+        const makingEl = document.getElementById('making_charge');
+        const costEl = document.getElementById('cost_price');
+        const netEl = document.getElementById('net_weight');
+        const fineEl = document.getElementById('fine_gold_weight');
 
-        // Load purity based on metal
-        metal.addEventListener('change', function () {
-            purity.innerHTML = '<option value="">Select purity</option>';
-            purity.disabled = true;
-            selling.value = '';
+        // Populate purity based on metal
+        metalEl.addEventListener('change', function () {
+            purityEl.innerHTML = '<option value="">Select purity</option>';
+            purityEl.disabled = true;
 
             if (!this.value) return;
 
-            metalRates
-                .filter(r => r.metal === this.value)
-                .forEach(r => {
-                    const opt = document.createElement('option');
-                    opt.value = r.purity_percent;
-                    opt.dataset.rate = r.rate_per_gram;
+            metalRates.filter(r => r.metal === this.value).forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r.purity_percent;
+                opt.dataset.rate = r.rate_per_gram;
+                opt.textContent = `${r.purity_percent}% (₹${r.rate_per_gram}/gm)`;
+                purityEl.appendChild(opt);
+            });
 
-                    // SHOW RATE PER GRAM IN DROPDOWN
-                    opt.textContent = `${r.purity_percent}% (₹${r.rate_per_gram} / gm)`;
-
-                    purity.appendChild(opt);
-                });
-
-            purity.disabled = false;
+            purityEl.disabled = false;
+            calculate();
         });
 
-        // Auto calculate selling price
         function calculate() {
-            const w = parseFloat(weight.value) || 0;
-            const h = parseFloat(handling.value) || 0;
-            const rate = purity.selectedOptions[0]
-                ? parseFloat(purity.selectedOptions[0].dataset.rate)
-                : 0;
+            const gross = parseFloat(grossEl.value) || 0;
+            const stone = parseFloat(stoneEl.value) || 0;
+            const making = parseFloat(makingEl.value) || 0;
+            const purityOption = purityEl.selectedOptions[0];
+            const rate = purityOption ? parseFloat(purityOption.dataset.rate) : 0;
 
-            selling.value = (w > 0 && rate > 0)
-                ? ((w * rate) + h).toFixed(2)
-                : '';
+            const net = Math.max(gross - stone, 0);
+            const fineGold = net * (purityOption ? purityOption.value / 100 : 0);
+
+            netEl.value = net.toFixed(3);
+            fineEl.value = fineGold.toFixed(3);
+
+            costEl.value = (fineGold * rate).toFixed(2);
         }
 
-        purity.addEventListener('change', calculate);
-        weight.addEventListener('input', calculate);
-        handling.addEventListener('input', calculate);
+        grossEl.addEventListener('input', calculate);
+        stoneEl.addEventListener('input', calculate);
+        makingEl.addEventListener('input', calculate);
+        purityEl.addEventListener('change', calculate);
+
     </script>
 @endsection

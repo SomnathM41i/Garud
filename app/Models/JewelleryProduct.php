@@ -11,35 +11,70 @@ class JewelleryProduct extends Model
         'product_name',
         'category_id',
         'metal_type',
-        'purity',
-        'weight',
 
-        'cost_price',            // COST PRICE (what you pay)
-        'handling_cost',   // INTERNAL COST (labour etc.)
+        /* ===== WEIGHTS ===== */
+        'gross_weight',
+        'stone_weight',
+        'net_weight',
 
-        'selling_price',    // DEFAULT SELLING PRICE
+        /* ===== PURITY ===== */
+        'purity_percent',
+        'fine_gold_weight',
+
+        /* ===== COST ===== */
+        'cost_price',
+        'handling_cost',
+
+        /* ===== MAKING ===== */
+        'making_charge',
 
         'stock_quantity',
         'description',
         'status',
     ];
 
+    /**
+     * =====================
+     * RELATIONSHIPS
+     * =====================
+     */
 
-    // Relation to category
     public function category()
     {
         return $this->belongsTo(JewelleryCategory::class, 'category_id');
     }
 
-    // Product can appear in many order items
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class, 'product_id');
     }
 
-    // Product can be in many carts
     public function carts()
     {
         return $this->hasMany(Cart::class, 'product_id');
+    }
+
+    /**
+     * =====================
+     * CALCULATED HELPERS
+     * =====================
+     */
+
+    /**
+     * Gold value (without making, GST, etc.)
+     */
+    public function getGoldValueAttribute()
+    {
+        return $this->fine_gold_weight * $this->getCurrentGoldRate();
+    }
+
+    /**
+     * OPTIONAL:
+     * Keep gold rate outside DB (recommended)
+     */
+    private function getCurrentGoldRate()
+    {
+        // Example: inject from config / service later
+        return config('gold.rate', 0);
     }
 }

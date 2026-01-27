@@ -3,6 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content')
+    <!-- Page Header -->
     <div class="page-header">
         <h1 class="page-title">Update Product</h1>
     </div>
@@ -10,7 +11,7 @@
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">
-                <i class="fas fa-edit"></i> Update Jewellers Product
+                <i class="fas fa-edit"></i> Update Jewellery Product
             </h3>
         </div>
 
@@ -21,91 +22,119 @@
 
                 {{-- Product Name --}}
                 <div class="form-group">
-                    <label class="form-label">Product Name *</label>
-                    <input type="text" name="product_name" class="form-control @error('product_name') is-invalid @enderror"
+                    <label class="form-label">Product Name <span class="text-danger">*</span></label>
+                    <input type="text" name="product_name"
+                        class="form-control @error('product_name') is-invalid @enderror"
                         value="{{ old('product_name', $product->product_name) }}">
                     @error('product_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
                 {{-- Product Code --}}
                 <div class="form-group">
-                    <label class="form-label">Product Code *</label>
-                    <input type="text" name="product_code" class="form-control @error('product_code') is-invalid @enderror"
+                    <label class="form-label">Product Code <span class="text-danger">*</span></label>
+                    <input type="text" name="product_code"
+                        class="form-control @error('product_code') is-invalid @enderror"
                         value="{{ old('product_code', $product->product_code) }}">
                     @error('product_code')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
                 {{-- Category --}}
                 <div class="form-group">
-                    <label class="form-label">Category *</label>
-                    <select name="category_id" class="form-control form-select">
+                    <label class="form-label">Category <span class="text-danger">*</span></label>
+                    <select name="category_id"
+                        class="form-control form-select @error('category_id') is-invalid @enderror">
+                        <option value="">Select category</option>
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
+                            <option value="{{ $category->id }}"
+                                {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
                                 {{ $category->category_name }}
                             </option>
                         @endforeach
                     </select>
+                    @error('category_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                {{-- Metal --}}
+                {{-- Metal Type --}}
                 <div class="form-group">
-                    <label class="form-label">Metal Type *</label>
-                    <select name="metal_type" id="metal_type" class="form-control form-select">
+                    <label class="form-label">Metal Type <span class="text-danger">*</span></label>
+                    <select name="metal_type" id="metal_type"
+                        class="form-control form-select @error('metal_type') is-invalid @enderror">
                         <option value="">Select metal</option>
                         @foreach($metalRates->pluck('metal')->unique() as $metal)
-                            <option value="{{ $metal }}" {{ old('metal_type', $product->metal_type) == $metal ? 'selected' : '' }}>
+                            <option value="{{ $metal }}"
+                                {{ old('metal_type', $product->metal_type) == $metal ? 'selected' : '' }}>
                                 {{ ucfirst($metal) }}
                             </option>
                         @endforeach
                     </select>
+                    @error('metal_type')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
                 {{-- Purity --}}
                 <div class="form-group">
                     <label class="form-label">Purity (%)</label>
-                    <select name="purity" id="purity" class="form-control"></select>
+                    <select name="purity_percent" id="purity_percent"
+                        class="form-control @error('purity_percent') is-invalid @enderror">
+                        <option value="">Select purity</option>
+                    </select>
+                    @error('purity_percent')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                {{-- Weight --}}
+                {{-- Gross Weight --}}
                 <div class="form-group">
-                    <label class="form-label">Weight (grams)</label>
-                    <input type="number" step="0.01" name="weight" id="weight" class="form-control"
-                        value="{{ old('weight', $product->weight) }}">
+                    <label class="form-label">Gross Weight (grams)</label>
+                    <input type="number" step="0.001" name="gross_weight" id="gross_weight"
+                        class="form-control @error('gross_weight') is-invalid @enderror"
+                        value="{{ old('gross_weight', $product->gross_weight) }}">
+                    @error('gross_weight')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                {{-- Handling --}}
+                {{-- Stone Weight --}}
                 <div class="form-group">
-                    <label class="form-label">Handling / Making Cost</label>
-                    <input type="number" step="0.01" name="handling_cost" id="handling_cost" class="form-control"
-                        value="{{ old('handling_cost', $product->handling_cost) }}">
+                    <label class="form-label">Stone Weight (grams)</label>
+                    <input type="number" step="0.001" name="stone_weight" id="stone_weight"
+                        class="form-control @error('stone_weight') is-invalid @enderror"
+                        value="{{ old('stone_weight', $product->stone_weight ?? 0) }}">
+                    @error('stone_weight')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                {{-- Cost Price (MANUAL) --}}
+                {{-- Making Charge --}}
                 <div class="form-group">
-                    <label class="form-label">Cost Price</label>
-                    <input type="number" step="0.01" name="cost_price" class="form-control"
-                        value="{{ old('cost_price', $product->cost_price) }}">
+                    <label class="form-label">Making Charge (₹)</label>
+                    <input type="number" step="0.01" name="making_charge" id="making_charge"
+                        class="form-control @error('making_charge') is-invalid @enderror"
+                        value="{{ old('making_charge', $product->making_charge ?? 0) }}">
+                    @error('making_charge')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                {{-- Selling --}}
+                {{-- Cost Price --}}
                 <div class="form-group">
-                    <label class="form-label">Selling Price</label>
-                    <input type="number" step="0.01" name="selling_price" id="selling_price" class="form-control"
-                        value="{{ old('selling_price', $product->selling_price) }}" readonly>
+                    <label class="form-label">Cost Price (Metal Value)</label>
+                    <input type="number" step="0.01" name="cost_price" id="cost_price"
+                        class="form-control @error('cost_price') is-invalid @enderror"
+                        value="{{ old('cost_price', $product->cost_price) }}" readonly>
+                    @error('cost_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                {{-- Stock --}}
+                {{-- Hidden net weight / fine gold --}}
+                <input type="hidden" name="net_weight" id="net_weight" value="{{ old('net_weight', $product->net_weight) }}">
+                <input type="hidden" name="fine_gold_weight" id="fine_gold_weight" value="{{ old('fine_gold_weight', $product->fine_gold_weight) }}">
+
+                {{-- Stock Quantity --}}
                 <div class="form-group">
                     <label class="form-label">Stock Quantity</label>
-                    <input type="number" name="stock_quantity" class="form-control"
+                    <input type="number" name="stock_quantity"
+                        class="form-control @error('stock_quantity') is-invalid @enderror"
                         value="{{ old('stock_quantity', $product->stock_quantity) }}">
+                    @error('stock_quantity')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
                 {{-- Description --}}
                 <div class="form-group">
                     <label class="form-label">Description</label>
-                    <textarea name="description"
-                        class="form-control">{{ old('description', $product->description) }}</textarea>
+                    <textarea name="description" rows="4"
+                        class="form-control @error('description') is-invalid @enderror">{{ old('description', $product->description) }}</textarea>
+                    @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
                 {{-- Status --}}
@@ -117,49 +146,74 @@
                     </select>
                 </div>
 
-                <button class="btn btn-gold">Update Product</button>
+                {{-- Buttons --}}
+                <div class="form-group d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-gold">
+                        <i class="fas fa-save"></i> Update Product
+                    </button>
+                    <a href="{{ route('admin.products.index') }}" class="btn btn-outline">
+                        Cancel
+                    </a>
+                </div>
+
             </form>
         </div>
     </div>
 @endsection
 
 @section('scripts')
-    <script>
-        const metalRates = @json($metalRates);
-        const metal = document.getElementById('metal_type');
-        const purity = document.getElementById('purity');
-        const weight = document.getElementById('weight');
-        const handling = document.getElementById('handling_cost');
-        const selling = document.getElementById('selling_price');
+<script>
+    const metalRates = @json($metalRates);
 
-        function loadPurity(selectedPurity = null) {
-            purity.innerHTML = '';
-            metalRates
-                .filter(r => r.metal === metal.value)
-                .forEach(r => {
-                    const opt = document.createElement('option');
-                    opt.value = r.purity_percent;
-                    opt.dataset.rate = r.rate_per_gram;
-                    opt.text = `${r.purity_percent}% (₹${r.rate_per_gram}/gm)`;
-                    if (selectedPurity == r.purity_percent) opt.selected = true;
-                    purity.appendChild(opt);
-                });
-        }
+    const metalEl = document.getElementById('metal_type');
+    const purityEl = document.getElementById('purity_percent');
+    const grossEl = document.getElementById('gross_weight');
+    const stoneEl = document.getElementById('stone_weight');
+    const makingEl = document.getElementById('making_charge');
+    const costEl = document.getElementById('cost_price');
+    const netEl = document.getElementById('net_weight');
+    const fineEl = document.getElementById('fine_gold_weight');
 
-        metal.addEventListener('change', () => loadPurity());
+    function loadPurity(selected = null) {
+        purityEl.innerHTML = '<option value="">Select purity</option>';
+        if (!metalEl.value) return;
 
-        function calculate() {
-            const rate = purity.selectedOptions[0]?.dataset.rate || 0;
-            selling.value = ((weight.value * rate) + (+handling.value || 0)).toFixed(2);
-        }
+        metalRates.filter(r => r.metal === metalEl.value).forEach(r => {
+            const opt = document.createElement('option');
+            opt.value = r.purity_percent;
+            opt.dataset.rate = r.rate_per_gram;
+            opt.textContent = `${r.purity_percent}% (₹${r.rate_per_gram}/gm)`;
+            if(selected == r.purity_percent) opt.selected = true;
+            purityEl.appendChild(opt);
+        });
+        calculate();
+    }
 
-        purity.addEventListener('change', calculate);
-        weight.addEventListener('input', calculate);
-        handling.addEventListener('input', calculate);
+    function calculate() {
+        const gross = parseFloat(grossEl.value) || 0;
+        const stone = parseFloat(stoneEl.value) || 0;
+        const making = parseFloat(makingEl.value) || 0;
+        const purityOption = purityEl.selectedOptions[0];
+        const rate = purityOption ? parseFloat(purityOption.dataset.rate) : 0;
 
-        // INITIAL LOAD
-        if (metal.value) {
-            loadPurity("{{ $product->purity }}");
-        }
-    </script>
+        const net = Math.max(gross - stone, 0);
+        const fineGold = net * (purityOption ? purityOption.value / 100 : 0);
+
+        netEl.value = net.toFixed(3);
+        fineEl.value = fineGold.toFixed(3);
+
+        costEl.value = (fineGold * rate).toFixed(2);
+    }
+
+    metalEl.addEventListener('change', () => loadPurity("{{ old('purity_percent', $product->purity_percent) }}"));
+    purityEl.addEventListener('change', calculate);
+    grossEl.addEventListener('input', calculate);
+    stoneEl.addEventListener('input', calculate);
+    makingEl.addEventListener('input', calculate);
+
+    // INITIAL LOAD
+    if (metalEl.value) {
+        loadPurity("{{ old('purity_percent', $product->purity_percent) }}");
+    }
+</script>
 @endsection

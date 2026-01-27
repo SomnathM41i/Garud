@@ -11,14 +11,28 @@ class OrderItem extends Model
         'product_id',
         'quantity',
 
-        'selling_price',          // SELLING PRICE (per item)
-        'cost_price',     // PURCHASE COST (per item)
-        'handling_cost',  // MAKING / LABOUR COST (per item)
+        /* ===== GOLD SNAPSHOT ===== */
+        'gross_weight',
+        'net_weight',
+        'fine_gold_weight',
+        'purity_percent',
+
+        'gold_rate',
+        'gold_value',
+        'making_charge',
+
+        /* ===== FINANCIAL SNAPSHOT ===== */
+        'selling_price',
+        'cost_price',
+        'handling_cost',
     ];
 
     /**
-     * Relationships
+     * =====================
+     * RELATIONSHIPS
+     * =====================
      */
+
     public function order()
     {
         return $this->belongsTo(Order::class);
@@ -31,20 +45,20 @@ class OrderItem extends Model
 
     /**
      * =====================
-     * BUSINESS LOGIC
+     * CALCULATED HELPERS
      * =====================
      */
 
     /**
-     * Cost per item
+     * Cost per item (what it actually costs you)
      */
-    // public function getUnitCostAttribute()
-    // {
-    //     return $this->cost_price + $this->handling_cost;
-    // }
+    public function getUnitCostAttribute()
+    {
+        return $this->cost_price + $this->handling_cost;
+    }
 
     /**
-     * Total cost for this item
+     * Total cost for this order item
      */
     public function getTotalCostAttribute()
     {
@@ -52,20 +66,18 @@ class OrderItem extends Model
     }
 
     /**
-     * Profit for this item
+     * Profit for this order item
      */
-    // public function getProfitAttribute()
-    // {
-    //     return ($this->price - $this->unit_cost) * $this->quantity;
-    // }
-
-    public function getUnitCostAttribute()
-    {
-        return $this->cost_price + $this->handling_cost;
-    }
-
     public function getProfitAttribute()
     {
         return ($this->selling_price - $this->unit_cost) * $this->quantity;
+    }
+
+    /**
+     * Total selling amount
+     */
+    public function getSubtotalAttribute()
+    {
+        return $this->selling_price * $this->quantity;
     }
 }

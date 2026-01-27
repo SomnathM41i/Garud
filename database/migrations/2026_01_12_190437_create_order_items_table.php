@@ -21,10 +21,20 @@ return new class extends Migration {
 
             $table->integer('quantity');
 
-            /* ===== SNAPSHOT AT SELL TIME ===== */
-            $table->decimal('selling_price', 12, 2);   // charged to customer
-            $table->decimal('cost_price', 12, 2);      // product cost
-            $table->decimal('handling_cost', 12, 2)->default(0); // making/labour
+            /* ===== GOLD SNAPSHOT ===== */
+            $table->decimal('gross_weight', 10, 3);
+            $table->decimal('net_weight', 10, 3);
+            $table->decimal('fine_gold_weight', 10, 3);
+            $table->decimal('purity_percent', 5, 2);
+
+            $table->decimal('gold_rate', 10, 2);
+            $table->decimal('gold_value', 12, 2);
+            $table->decimal('making_charge', 12, 2);
+
+            /* ===== FINANCIAL SNAPSHOT ===== */
+            $table->decimal('selling_price', 12, 2);
+            $table->decimal('cost_price', 12, 2);
+            $table->decimal('handling_cost', 12, 2)->default(0);
 
             $table->timestamps();
         });

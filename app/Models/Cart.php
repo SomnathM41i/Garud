@@ -11,12 +11,26 @@ class Cart extends Model
         'product_id',
         'quantity',
 
-        'selling_price',   // PRICE CUSTOMER PAYS (per item)
+        /* ===== GOLD SNAPSHOT ===== */
+        'gross_weight',
+        'net_weight',
+        'fine_gold_weight',
+        'purity_percent',
+
+        'gold_rate',
+        'gold_value',
+        'making_charge',
+
+        /* ===== SELLING ===== */
+        'selling_price',
     ];
 
     /**
-     * Relationships
+     * =====================
+     * RELATIONSHIPS
+     * =====================
      */
+
     public function product()
     {
         return $this->belongsTo(JewelleryProduct::class, 'product_id');
@@ -33,9 +47,19 @@ class Cart extends Model
      * =====================
      */
 
+    /**
+     * Total amount for this cart row
+     */
     public function getSubtotalAttribute()
     {
         return $this->selling_price * $this->quantity;
     }
 
+    /**
+     * Total gold value for this cart row
+     */
+    public function getTotalGoldValueAttribute()
+    {
+        return $this->gold_value * $this->quantity;
+    }
 }

@@ -16,7 +16,6 @@ class JewelleryProductController extends Controller
     public function index()
     {
         $products = JewelleryProduct::with('category')->latest()->get();
-        //dd($products->all());
         return view('admin.products.index', compact('products'));
     }
 
@@ -29,11 +28,10 @@ class JewelleryProductController extends Controller
 
         // Get the latest metal rates
         $latestDate = MetalRate::max('rate_date');
-
         $metalRates = MetalRate::where('rate_date', $latestDate)
             ->select('metal', 'purity_percent', 'rate_per_gram')
             ->get();
-        // dd($metalRates);
+
         return view('admin.products.create', compact('categories', 'metalRates'));
     }
 
@@ -42,21 +40,27 @@ class JewelleryProductController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
         $validated = $request->validate([
             'product_code' => 'required|string|max:50|unique:jewellery_products,product_code',
             'product_name' => 'required|string|max:150',
             'category_id' => 'required|exists:jewellery_categories,id',
             'metal_type' => 'required|string|max:50',
-            'purity' => 'nullable|string|max:20',
-            'weight' => 'nullable|numeric',
 
-            // COST STRUCTURE
+            /* ===== WEIGHTS ===== */
+            'gross_weight' => 'required|numeric|min:0',
+            'stone_weight' => 'nullable|numeric|min:0',
+            'net_weight' => 'required|numeric|min:0',
+
+            /* ===== PURITY ===== */
+            'purity_percent' => 'required|numeric|min:0|max:100',
+            'fine_gold_weight' => 'required|numeric|min:0',
+
+            /* ===== COST ===== */
             'cost_price' => 'required|numeric|min:0',
             'handling_cost' => 'nullable|numeric|min:0',
 
-            // SELLING PRICE
-            'selling_price' => 'required|numeric|min:0',
+            /* ===== MAKING ===== */
+            'making_charge' => 'required|numeric|min:0',
 
             'stock_quantity' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
@@ -76,9 +80,8 @@ class JewelleryProductController extends Controller
     public function edit(JewelleryProduct $product)
     {
         $categories = JewelleryCategory::where('status', 'active')->get();
-
         $latestDate = MetalRate::max('rate_date');
-        // Fetch today's metal rates (all columns)
+
         $metalRates = MetalRate::where('rate_date', $latestDate)
             ->select('metal', 'purity_percent', 'rate_per_gram')
             ->get();
@@ -101,15 +104,22 @@ class JewelleryProductController extends Controller
             'product_name' => 'required|string|max:150',
             'category_id' => 'required|exists:jewellery_categories,id',
             'metal_type' => 'required|string|max:50',
-            'purity' => 'nullable|string|max:20',
-            'weight' => 'nullable|numeric',
 
-            // COST STRUCTURE
+            /* ===== WEIGHTS ===== */
+            'gross_weight' => 'required|numeric|min:0',
+            'stone_weight' => 'nullable|numeric|min:0',
+            'net_weight' => 'required|numeric|min:0',
+
+            /* ===== PURITY ===== */
+            'purity_percent' => 'required|numeric|min:0|max:100',
+            'fine_gold_weight' => 'required|numeric|min:0',
+
+            /* ===== COST ===== */
             'cost_price' => 'required|numeric|min:0',
             'handling_cost' => 'nullable|numeric|min:0',
 
-            // SELLING PRICE
-            'selling_price' => 'required|numeric|min:0',
+            /* ===== MAKING ===== */
+            'making_charge' => 'nullable|numeric|min:0',
 
             'stock_quantity' => 'nullable|integer|min:0',
             'description' => 'nullable|string',

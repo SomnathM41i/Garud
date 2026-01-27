@@ -1,44 +1,65 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+namespace App\Models;
 
-return new class extends Migration {
+use Illuminate\Database\Eloquent\Model;
+
+class Cart extends Model
+{
+    protected $fillable = [
+        'sales_user_id',
+        'product_id',
+        'quantity',
+
+        /* ===== GOLD SNAPSHOT ===== */
+        'gross_weight',
+        'net_weight',
+        'fine_gold_weight',
+        'purity_percent',
+
+        'gold_rate',
+        'gold_value',
+        'making_charge',
+
+        /* ===== SELLING ===== */
+        'selling_price',
+    ];
+
     /**
-     * Run the migrations.
+     * =====================
+     * RELATIONSHIPS
+     * =====================
      */
-    public function up(): void
+
+    public function product()
     {
-        Schema::create('carts', function (Blueprint $table) {
-            $table->id();
+        return $this->belongsTo(JewelleryProduct::class, 'product_id');
+    }
 
-            // Sales user (who is creating the order)
-            $table->foreignId('sales_user_id')
-                ->constrained('users')
-                ->onDelete('cascade');
-
-            // Product
-            $table->foreignId('product_id')
-                ->constrained('jewellery_products')
-                ->onDelete('cascade');
-
-            // Quantity selected
-            $table->integer('quantity')->default(1);
-
-            // Snapshot of selling price at cart time
-            $table->decimal('selling_price', 12, 2);
-
-            $table->timestamps();
-        });
-
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'sales_user_id');
     }
 
     /**
-     * Reverse the migrations.
+     * =====================
+     * CALCULATED HELPERS
+     * =====================
      */
-    public function down(): void
+
+    /**
+     * Total amount for this cart row
+     */
+    public function getSubtotalAttribute()
     {
-        Schema::dropIfExists('carts');
+        return $this->selling_price * $this->quantity;
     }
-};
+
+    /**
+     * Total gold value (optional helper)
+     */
+    public function getTotalGoldValueAttribute()
+    {
+        return $this->gold_value * $this->quantity;
+    }
+}

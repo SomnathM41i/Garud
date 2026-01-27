@@ -83,20 +83,19 @@ class MetalRateController extends Controller
     protected function updateProductSellingPrices(string $metal, float $purity, float $ratePerGram): void
     {
         $products = JewelleryProduct::where('metal_type', $metal)
-            ->where('purity', $purity)
-            ->whereNotNull('weight')
+            ->where('purity_percent', $purity)
             ->get();
 
         foreach ($products as $product) {
-            $basePrice = $ratePerGram * $product->weight;
-            $handling = $product->handling_cost ?? 0;
+            // Calculate new cost price based on fine gold weight
+            $costPrice = $product->fine_gold_weight * $ratePerGram;
 
+            // Update selling price including handling_cost + making_charge
             $product->update([
-                'selling_price' => $basePrice + $handling,
+                'cost_price' => $costPrice + ($product->handling_cost ?? 0) + ($product->making_charge ?? 0),
             ]);
         }
     }
-
 
     /**
      * Delete metal rate

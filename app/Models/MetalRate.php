@@ -36,4 +36,16 @@ class MetalRate extends Model
 
         return $query;
     }
+
+    public function scopeLatestByPurity($query, $metal, $purityPercent)
+    {
+        $latestDate = self::whereRaw('LOWER(metal) = ?', [strtolower($metal)])
+            ->max('rate_date');
+
+        return $query
+            ->whereRaw('LOWER(metal) = ?', [strtolower($metal)])
+            ->where('purity_percent', $purityPercent)
+            ->whereDate('rate_date', $latestDate);
+    }
+
 }
