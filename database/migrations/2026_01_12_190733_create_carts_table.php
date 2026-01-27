@@ -1,65 +1,58 @@
 <?php
 
-namespace App\Models;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Cart extends Model
-{
-    protected $fillable = [
-        'sales_user_id',
-        'product_id',
-        'quantity',
-
-        /* ===== GOLD SNAPSHOT ===== */
-        'gross_weight',
-        'net_weight',
-        'fine_gold_weight',
-        'purity_percent',
-
-        'gold_rate',
-        'gold_value',
-        'making_charge',
-
-        /* ===== SELLING ===== */
-        'selling_price',
-    ];
-
+return new class extends Migration {
     /**
-     * =====================
-     * RELATIONSHIPS
-     * =====================
+     * Run the migrations.
      */
-
-    public function product()
+    public function up(): void
     {
-        return $this->belongsTo(JewelleryProduct::class, 'product_id');
-    }
+        Schema::create('carts', function (Blueprint $table) {
+            $table->id();
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'sales_user_id');
-    }
+            // Sales user (who is creating the order)
+            $table->foreignId('sales_user_id')
+                ->constrained('users')
+                ->onDelete('cascade');
 
-    /**
-     * =====================
-     * CALCULATED HELPERS
-     * =====================
-     */
+            // Product
+            $table->foreignId('product_id')
+                ->constrained('jewellery_products')
+                ->onDelete('cascade');
 
-    /**
-     * Total amount for this cart row
-     */
-    public function getSubtotalAttribute()
-    {
-        return $this->selling_price * $this->quantity;
+            // Quantity selected
+            $table->integer('quantity')->default(1);
+
+            /* =====================
+             * GOLD SNAPSHOT
+             * ===================== */
+            $table->decimal('gross_weight', 10, 3)->nullable();      // grams
+            $table->decimal('net_weight', 10, 3)->nullable();        // grams
+            $table->decimal('fine_gold_weight', 10, 3)->nullable();  // grams
+            $table->decimal('purity_percent', 5, 2)->nullable();     // e.g. 91.60
+
+            $table->decimal('gold_rate', 10, 2)->nullable();         // rate per gram
+            $table->decimal('gold_value', 12, 2)->nullable();        // total gold value
+            $table->decimal('making_charge', 12, 2)->nullable();
+
+            /* =====================
+             * SELLING
+             * ===================== */
+            // Snapshot of selling price at cart time
+            $table->decimal('selling_price', 12, 2);
+
+            $table->timestamps();
+        });
     }
 
     /**
-     * Total gold value (optional helper)
+     * Reverse the migrations.
      */
-    public function getTotalGoldValueAttribute()
+    public function down(): void
     {
-        return $this->gold_value * $this->quantity;
+        Schema::dropIfExists('carts');
     }
-}
+};
