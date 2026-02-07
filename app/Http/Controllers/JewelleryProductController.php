@@ -27,11 +27,16 @@ class JewelleryProductController extends Controller
         $categories = JewelleryCategory::where('status', 'active')->get();
 
         // Get the latest metal rates
-        $latestDate = MetalRate::max('rate_date');
-        $metalRates = MetalRate::where('rate_date', $latestDate)
-            ->select('metal', 'purity_percent', 'rate_per_gram')
+        // $latestDate = MetalRate::max('rate_date');
+        // $metalRates = MetalRate::where('rate_date', $latestDate)
+        //     ->select('metal', 'purity_percent', 'rate_per_gram')
+        //     ->get();
+
+        $metalRates = MetalRate::select('metal', 'purity_percent', 'rate_per_gram', 'rate_date')
+            ->orderBy('rate_date', 'desc')
             ->get();
 
+        // dd($metalRates);
         return view('admin.products.create', compact('categories', 'metalRates'));
     }
 
@@ -80,10 +85,14 @@ class JewelleryProductController extends Controller
     public function edit(JewelleryProduct $product)
     {
         $categories = JewelleryCategory::where('status', 'active')->get();
-        $latestDate = MetalRate::max('rate_date');
 
-        $metalRates = MetalRate::where('rate_date', $latestDate)
-            ->select('metal', 'purity_percent', 'rate_per_gram')
+        // $latestDate = MetalRate::max('rate_date');
+        // $metalRates = MetalRate::where('rate_date', $latestDate)
+        //     ->select('metal', 'purity_percent', 'rate_per_gram')
+        //     ->get();
+
+        $metalRates = MetalRate::select('metal', 'purity_percent', 'rate_per_gram', 'rate_date')
+            ->orderBy('rate_date', 'desc')
             ->get();
 
         return view('admin.products.edit', compact('product', 'categories', 'metalRates'));
