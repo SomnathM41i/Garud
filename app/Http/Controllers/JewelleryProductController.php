@@ -18,16 +18,34 @@ class JewelleryProductController extends Controller
         $products = JewelleryProduct::with('category')->get();
 
         $totals = [
-            'gross_weight' => $products->sum('gross_weight'),
-            'stone_weight' => $products->sum('stone_weight'),
-            'net_weight' => $products->sum('net_weight'),
-            'fine_gold_weight' => $products->sum('fine_gold_weight'),
-            'cost_price' => $products->sum('cost_price'),
-            'making_charge' => $products->sum('making_charge'),
+            'gross_weight' => $products->sum(function ($product) {
+                return $product->gross_weight * $product->stock_quantity;
+            }),
+
+            'stone_weight' => $products->sum(function ($product) {
+                return $product->stone_weight * $product->stock_quantity;
+            }),
+
+            'net_weight' => $products->sum(function ($product) {
+                return $product->net_weight * $product->stock_quantity;
+            }),
+
+            'fine_gold_weight' => $products->sum(function ($product) {
+                return $product->fine_gold_weight * $product->stock_quantity;
+            }),
+
+            'cost_price' => $products->sum(function ($product) {
+                return $product->cost_price * $product->stock_quantity;
+            }),
+
+            'making_charge' => $products->sum(function ($product) {
+                return $product->making_charge * $product->stock_quantity;
+            }),
         ];
 
         return view('admin.products.index', compact('products', 'totals'));
     }
+
 
 
     /**
