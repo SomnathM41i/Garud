@@ -34,6 +34,7 @@ class MetalRateController extends Controller
         $validated = $request->validate([
             'metal' => 'required|in:gold,silver',
             'purity_percent' => 'required|numeric|min:0|max:100',
+            'buying_purity_percent' => 'required|numeric|min:0|max:100',
             'rate_per_gram' => 'required|numeric|min:0',
             'rate_date' => 'required|date',
         ]);
@@ -61,6 +62,7 @@ class MetalRateController extends Controller
         $validated = $request->validate([
             'metal' => 'required|in:gold,silver',
             'purity_percent' => 'required|numeric|min:0|max:100',
+            'buying_purity_percent' => 'required|numeric|min:0|max:100',
             'rate_per_gram' => 'required|numeric|min:0',
             'rate_date' => 'required|date',
         ]);

@@ -22,7 +22,8 @@ class OrderController extends Controller
         $orders = Order::with('customer')
             ->latest()
             ->get();
-
+        // print ($orders->toJson());
+        // exit;
         return view('admin.orders.index', compact('orders'));
     }
 
@@ -70,6 +71,9 @@ class OrderController extends Controller
                 'status' => 'pending',
             ]);
 
+            /** ======================
+             * CART ITEMS
+             * ===================== */
             $cartItems = Cart::with('product')
                 ->where('sales_user_id', auth()->id())
                 ->get();
@@ -78,29 +82,33 @@ class OrderController extends Controller
             $totalProfit = 0;
 
             /** ======================
-             * ORDER ITEMS
+             * ORDER ITEMS (use snapshot from cart)
              * ===================== */
             foreach ($cartItems as $cart) {
-
-                $sellingPrice = $cart->selling_price;               // what customer pays
-                $costPrice = $cart->product->cost_price;              // base product cost
-                $handlingCost = $cart->product->handling_cost;                                   // can be extended later
-
-                $subtotal = $sellingPrice * $cart->quantity;
-                $profit = ($sellingPrice - ($costPrice + $handlingCost))
-                    * $cart->quantity;
 
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $cart->product_id,
                     'quantity' => $cart->quantity,
-                    'selling_price' => $sellingPrice,
-                    'cost_price' => $costPrice,
-                    'handling_cost' => $handlingCost,
+
+                    /* ===== GOLD SNAPSHOT ===== */
+                    'gross_weight' => $cart->gross_weight,
+                    'net_weight' => $cart->net_weight,
+                    'fine_gold_weight' => $cart->fine_gold_weight,
+                    'purity_percent' => $cart->purity_percent,
+
+                    'gold_rate' => $cart->gold_rate,
+                    'gold_value' => $cart->gold_value,
+                    'making_charge' => $cart->making_charge ?? 0,
+
+                    /* ===== FINANCIAL SNAPSHOT ===== */
+                    'selling_price' => $cart->selling_price,
+                    'cost_price' => $cart->gold_value, // already captured in cart
+                    'handling_cost' => $cart->making_charge ?? 0,
                 ]);
 
-                $totalAmount += $subtotal;
-                $totalProfit += $profit;
+                $totalAmount += $cart->selling_price * $cart->quantity;
+                $totalProfit += $cart->total_profit; // **use stored total_profit from cart**
             }
 
             /** ======================
@@ -116,10 +124,11 @@ class OrderController extends Controller
             /** ======================
              * STOCK DEDUCTION
              * ===================== */
-            foreach ($order->items as $item) {
+            foreach ($cartItems as $item) {
                 $item->product->decrement('stock_quantity', $item->quantity);
             }
-
+            // print_r($totalProfit);
+            // exit;
             /** ======================
              * FINAL ORDER UPDATE
              * ===================== */
@@ -139,6 +148,8 @@ class OrderController extends Controller
             ->route('admin.orders.index')
             ->with('success', 'Order created successfully.');
     }
+
+
 
     /**
      * View order details

@@ -13,22 +13,18 @@ class ReportController extends Controller
      */
     public function profitLoss(Request $request)
     {
-        $orders = Order::with('items')
-            ->where('status', 'completed')
+        $orders = Order::where('status', 'completed')
+            ->latest()
             ->get();
 
-        // Total revenue (what customer paid)
+        // Total revenue (stored)
         $totalRevenue = $orders->sum('total_amount');
 
-        // Real profit (calculated from OrderItem model)
-        $totalProfit = $orders->sum(function ($order) {
-            return $order->profit;
-        });
+        // Total profit (stored snapshot from cart)
+        $totalProfit = $orders->sum('total_profit');
 
-        // Real cost (product cost + handling cost)
-        $totalCost = $orders->sum(function ($order) {
-            return $order->total_cost;
-        });
+        // Total cost = Revenue - Profit
+        $totalCost = $totalRevenue - $totalProfit;
 
         return view('admin.reports.profit_loss', compact(
             'orders',
@@ -37,4 +33,5 @@ class ReportController extends Controller
             'totalProfit'
         ));
     }
+
 }

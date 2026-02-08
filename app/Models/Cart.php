@@ -23,6 +23,7 @@ class Cart extends Model
 
         /* ===== SELLING ===== */
         'selling_price',
+        'total_profit',
     ];
 
     /**

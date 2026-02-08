@@ -5,9 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
         Schema::create('carts', function (Blueprint $table) {
@@ -32,7 +30,7 @@ return new class extends Migration {
             $table->decimal('gross_weight', 10, 3)->nullable();      // grams
             $table->decimal('net_weight', 10, 3)->nullable();        // grams
             $table->decimal('fine_gold_weight', 10, 3)->nullable();  // grams
-            $table->decimal('purity_percent', 5, 2)->nullable();     // e.g. 91.60
+            $table->decimal('purity_percent', 5, 2)->nullable();     // e.g. 91.60%
 
             $table->decimal('gold_rate', 10, 2)->nullable();         // rate per gram
             $table->decimal('gold_value', 12, 2)->nullable();        // total gold value
@@ -41,16 +39,17 @@ return new class extends Migration {
             /* =====================
              * SELLING
              * ===================== */
-            // Snapshot of selling price at cart time
+
+            // Snapshot selling price (per item)
             $table->decimal('selling_price', 12, 2);
+
+            // ADD THIS (missing in your migration)
+            $table->decimal('total_profit', 12, 2)->nullable();
 
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('carts');

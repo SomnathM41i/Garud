@@ -66,8 +66,8 @@
                                 <td>{{ $order->invoice_number }}</td>
                                 <td>{{ $order->customer->name ?? '-' }}</td>
                                 <td>₹{{ number_format($order->total_amount, 2) }}</td>
-                                <td>₹{{ number_format($order->total_cost, 2) }}</td>
-                                <td>₹{{ number_format($order->profit, 2) }}</td>
+                                <td>₹{{ number_format($order->total_amount - $order->total_profit, 2) }}</td>
+                                <td>₹{{ number_format($order->total_profit, 2) }}</td>
                                 <td>{{ $order->created_at->format('d M, Y') }}</td>
                             </tr>
                         @endforeach

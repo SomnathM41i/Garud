@@ -55,7 +55,7 @@
 
                                 {{-- ✅ Uses Order::getProfitAttribute() --}}
                                 <td>
-                                    ₹{{ number_format($order->profit, 2) }}
+                                    ₹{{ number_format($order->total_profit, 2) }}
                                 </td>
 
                                 <td>
