@@ -15,9 +15,20 @@ class JewelleryProductController extends Controller
      */
     public function index()
     {
-        $products = JewelleryProduct::with('category')->latest()->get();
-        return view('admin.products.index', compact('products'));
+        $products = JewelleryProduct::with('category')->get();
+
+        $totals = [
+            'gross_weight' => $products->sum('gross_weight'),
+            'stone_weight' => $products->sum('stone_weight'),
+            'net_weight' => $products->sum('net_weight'),
+            'fine_gold_weight' => $products->sum('fine_gold_weight'),
+            'cost_price' => $products->sum('cost_price'),
+            'making_charge' => $products->sum('making_charge'),
+        ];
+
+        return view('admin.products.index', compact('products', 'totals'));
     }
+
 
     /**
      * Show the form for creating a new product.

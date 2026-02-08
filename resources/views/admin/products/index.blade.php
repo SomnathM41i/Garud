@@ -25,6 +25,57 @@
                 </a>
             </div>
         </div>
+        {{-- Summary Section --}}
+        <div class="row mb-2 g-3 px-3 mt-2">
+            <div class="col-md-2">
+                <div class="card shadow-sm text-center">
+                    <div class="card-body fs-5 p-2">
+                        <small>Total Gross Wt</small>
+                        <h6 class="mb-0 fw-bold">{{ number_format($totals['gross_weight'], 3) }} g</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="card shadow-sm text-center">
+                    <div class="card-body fs-5 p-2">
+                        <small>Total Net Wt</small>
+                        <h6 class="mb-0 fw-bold">{{ number_format($totals['net_weight'], 3) }} g</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="card shadow-sm text-center">
+                    <div class="card-body fs-5 p-2">
+                        <small>Total Fine Gold</small>
+                        <h6 class="mb-0 fw-bold">{{ number_format($totals['fine_gold_weight'], 3) }} g</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm text-center">
+                    <div class="card-body fs-5 p-2">
+                        <small>Total Cost Price</small>
+                        <h6 class="mb-0 fw-bold text-success">
+                            ₹{{ number_format($totals['cost_price'], 2) }}
+                        </h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm text-center">
+                    <div class="card-body fs-5 p-2">
+                        <small>Total Making Charge</small>
+                        <h6 class="mb-0 fw-bold text-primary">
+                            ₹{{ number_format($totals['making_charge'], 2) }}
+                        </h6>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="card-body p-0">
             <div class="table-responsive">
