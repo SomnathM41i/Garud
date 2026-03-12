@@ -17,12 +17,20 @@ class Cart extends Model
         'fine_gold_weight',
         'purity_percent',
 
+        /* ===== BUYING SNAPSHOT ===== */
+        'buying_purity_percent',
+        'buying_gold_weight',
+
+        /* ===== RATE SNAPSHOT ===== */
         'gold_rate',
         'gold_value',
         'making_charge',
 
         /* ===== SELLING ===== */
         'selling_price',
+
+        /* ===== PROFIT ===== */
+        'profit_gold',
         'total_profit',
     ];
 
@@ -62,5 +70,13 @@ class Cart extends Model
     public function getTotalGoldValueAttribute()
     {
         return $this->gold_value * $this->quantity;
+    }
+
+    /**
+     * Total profit in gold
+     */
+    public function getTotalProfitGoldAttribute()
+    {
+        return $this->profit_gold * $this->quantity;
     }
 }

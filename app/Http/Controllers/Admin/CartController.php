@@ -19,11 +19,33 @@ class CartController extends Controller
             ->where('sales_user_id', auth()->id())
             ->get();
 
-        $totalAmount = $cartItems->sum(fn($item) => $item->subtotal);
-        $totalProfit = $cartItems->sum(fn($item) => $item->total_profit);
+        $totalAmount = $cartItems->sum(fn($item) => $item->selling_price * $item->quantity);
+        $totalProfit = $cartItems->sum('total_profit');
+        $totalProfitGold = $cartItems->sum('profit_gold');
 
-        return view('admin.cart.index', compact('cartItems', 'totalAmount', 'totalProfit'));
+        return view('admin.cart.index', compact(
+            'cartItems',
+            'totalAmount',
+            'totalProfit',
+            'totalProfitGold'
+        ));
     }
+
+//     public function index()
+// {
+//     $cartItems = Cart::with('product')
+//         ->where('sales_user_id', auth()->id())
+//         ->get();
+
+//     $totalAmount = $cartItems->sum(fn($item) => $item->selling_price * $item->quantity);
+//     $totalProfit = $cartItems->sum('total_profit');
+
+//     return view('admin.cart.index', compact(
+//         'cartItems',
+//         'totalAmount',
+//         'totalProfit'
+//     ));
+// }
 
     /**
      * Add product to cart
@@ -37,52 +59,69 @@ class CartController extends Controller
 
         $product = JewelleryProduct::findOrFail($request->product_id);
 
-        // SELLING RATE (based on product purity)
+        if ($request->quantity > $product->stock_quantity) {
+            return back()->with('error', 'Not enough stock available.');
+        }
+
+        /*
+        |---------------------------------------
+        | GET CURRENT SELLING GOLD RATE
+        |---------------------------------------
+        */
+
         $sellingRateRow = MetalRate::where('metal', $product->metal_type)
             ->where('purity_percent', $product->purity_percent)
             ->latest('rate_date')
             ->first();
 
         if (!$sellingRateRow) {
-            return back()->with('error', 'Selling metal rate not available.');
+            return back()->with('error', 'Metal rate not available.');
         }
 
-        // BUYING RATE (based on buying purity)
-        $buyingRateRow = MetalRate::where('metal', $product->metal_type)
-            ->where('purity_percent', $sellingRateRow->buying_purity_percent)
-            ->latest('rate_date')
-            ->first();
+        $goldRate = $sellingRateRow->rate_per_gram;
 
-        if (!$buyingRateRow) {
-            return redirect()
-                ->route('admin.metal-rates.index')
-                ->with('error', 'Buying metal rate not available.');
-        }
+        /*
+        |---------------------------------------
+        | SELLING CALCULATIONS
+        |---------------------------------------
+        */
 
-        $sellingRatePerGram = $sellingRateRow->rate_per_gram;
-        $buyingRatePerGram = $buyingRateRow->rate_per_gram;
-        $buyingPurity = $sellingRateRow->buying_purity_percent;
+        $sellingGold = $product->fine_gold_weight;
 
-        // Stock check
-        if ($request->quantity > $product->stock_quantity) {
-            return back()->with('error', 'Not enough stock available.');
-        }
+        $goldValuePerUnit = $sellingGold * $goldRate;
 
-        // PROFIT CALCULATION
-        $netWeight = $product->net_weight;
+        $sellingPricePerUnit = $goldValuePerUnit + ($product->making_charge ?? 0);
 
-        $sellingValuePerUnit = $netWeight * ($product->purity_percent / 100) * $sellingRatePerGram;
-        $buyingCostPerUnit = $netWeight * ($buyingPurity / 100) * $buyingRatePerGram;
+        /*
+        |---------------------------------------
+        | BUYING GOLD CALCULATION
+        |---------------------------------------
+        */
 
-        $profitPerUnit = $sellingValuePerUnit - $buyingCostPerUnit;
-        $sellingPricePerUnit = $sellingValuePerUnit + ($product->making_charge ?? 0);
+        $buyingGold = $product->net_weight * ($product->buying_purity_percent / 100);
 
-        // Check if product already in cart
+        /*
+        |---------------------------------------
+        | PROFIT CALCULATIONS
+        |---------------------------------------
+        */
+
+        $profitGoldPerUnit = $sellingGold - $buyingGold;
+
+        $profitCashPerUnit = $profitGoldPerUnit * $goldRate;
+
+        /*
+        |---------------------------------------
+        | CHECK IF PRODUCT ALREADY IN CART
+        |---------------------------------------
+        */
+
         $cart = Cart::where('sales_user_id', auth()->id())
             ->where('product_id', $product->id)
             ->first();
 
         if ($cart) {
+
             $newQty = $cart->quantity + $request->quantity;
 
             if ($newQty > $product->stock_quantity) {
@@ -92,10 +131,12 @@ class CartController extends Controller
             $cart->update([
                 'quantity' => $newQty,
                 'selling_price' => $sellingPricePerUnit,
-                'total_profit' => $profitPerUnit * $newQty,
+                'total_profit' => $profitCashPerUnit * $newQty,
+                'profit_gold' => $profitGoldPerUnit * $newQty,
             ]);
 
         } else {
+
             Cart::create([
                 'sales_user_id' => auth()->id(),
                 'product_id' => $product->id,
@@ -106,12 +147,20 @@ class CartController extends Controller
                 'fine_gold_weight' => $product->fine_gold_weight,
                 'purity_percent' => $product->purity_percent,
 
-                'gold_rate' => $sellingRatePerGram,
-                'gold_value' => $sellingValuePerUnit,
+                /* BUYING SNAPSHOT */
+                'buying_purity_percent' => $product->buying_purity_percent,
+                'buying_gold_weight' => $buyingGold,
+
+                /* RATE SNAPSHOT */
+                'gold_rate' => $goldRate,
+                'gold_value' => $goldValuePerUnit,
                 'making_charge' => $product->making_charge ?? 0,
 
                 'selling_price' => $sellingPricePerUnit,
-                'total_profit' => $profitPerUnit * $request->quantity,
+
+                /* PROFIT */
+                'profit_gold' => $profitGoldPerUnit * $request->quantity,
+                'total_profit' => $profitCashPerUnit * $request->quantity,
             ]);
         }
 
@@ -121,7 +170,7 @@ class CartController extends Controller
     }
 
     /**
-     * Update selling price & profit
+     * Update selling price
      */
     public function update(Request $request, Cart $cart)
     {
@@ -133,42 +182,49 @@ class CartController extends Controller
             abort(403);
         }
 
-        // SELLING RATE info stored in cart snapshot
-        $sellingRatePerGram = $cart->gold_rate;
-        $sellingPurity = $cart->purity_percent;
+        $newSellingPrice = $request->selling_price;
 
-        // Step 1: Get the MetalRate row for this selling purity
-        $sellingRateRow = MetalRate::where('metal', $cart->product->metal_type)
-            ->where('purity_percent', $sellingPurity)
-            ->latest('rate_date')
-            ->first();
+        /*
+        |---------------------------------------
+        | GOLD SNAPSHOT VALUES
+        |---------------------------------------
+        */
 
-        if ($sellingRateRow) {
-            $buyingPurity = $sellingRateRow->buying_purity_percent;
+        $sellingGold = $cart->fine_gold_weight;
+        $buyingGold  = $cart->buying_gold_weight;
+        $goldRate    = $cart->gold_rate;
 
-            // Step 2: Get buying rate row using buying purity
-            $buyingRateRow = MetalRate::where('metal', $cart->product->metal_type)
-                ->where('purity_percent', $buyingPurity)
-                ->latest('rate_date')
-                ->first();
+        /*
+        |---------------------------------------
+        | PROFIT GOLD
+        |---------------------------------------
+        */
 
-            $buyingRatePerGram = $buyingRateRow ? $buyingRateRow->rate_per_gram : $sellingRatePerGram;
-        } else {
-            // Fallback: use selling rate as buying rate
-            $buyingPurity = $sellingPurity;
-            $buyingRatePerGram = $sellingRatePerGram;
-        }
+        $profitGoldPerUnit = $sellingGold - $buyingGold;
 
-        // Calculate profit per unit
-        $profitPerUnit = $request->selling_price - ($cart->net_weight * ($buyingPurity / 100) * $buyingRatePerGram);
+        /*
+        |---------------------------------------
+        | PROFIT CASH
+        |---------------------------------------
+        */
 
-        // Update cart
+        $goldCostPerUnit = $buyingGold * $goldRate;
+
+        $profitCashPerUnit = $newSellingPrice - $goldCostPerUnit;
+
+        /*
+        |---------------------------------------
+        | UPDATE CART
+        |---------------------------------------
+        */
+
         $cart->update([
-            'selling_price' => $request->selling_price,
-            'total_profit' => $profitPerUnit * $cart->quantity,
+            'selling_price' => $newSellingPrice,
+            'profit_gold'   => $profitGoldPerUnit,
+            'total_profit'  => $profitCashPerUnit * $cart->quantity,
         ]);
 
-        return back()->with('success', 'Selling price and profit updated successfully.');
+        return back()->with('success', 'Selling price updated successfully.');
     }
 
     /**

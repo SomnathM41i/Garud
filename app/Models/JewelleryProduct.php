@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class JewelleryProduct extends Model
 {
     protected $fillable = [
-        'product_code',
         'product_name',
-        'category_id',
+    
         'metal_type',
 
         /* ===== WEIGHTS ===== */
@@ -25,11 +24,13 @@ class JewelleryProduct extends Model
         'cost_price',
         'handling_cost',
 
+        'buying_purity_percent',
+        'buying_price',
+
         /* ===== MAKING ===== */
         'making_charge',
 
         'stock_quantity',
-        'description',
         'status',
     ];
 
@@ -39,10 +40,7 @@ class JewelleryProduct extends Model
      * =====================
      */
 
-    public function category()
-    {
-        return $this->belongsTo(JewelleryCategory::class, 'category_id');
-    }
+
 
     public function orderItems()
     {

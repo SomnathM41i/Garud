@@ -9,41 +9,82 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('carts', function (Blueprint $table) {
+
             $table->id();
 
-            // Sales user (who is creating the order)
+            /*
+            |--------------------------------------------------------------------------
+            | SALES USER
+            |--------------------------------------------------------------------------
+            */
+
             $table->foreignId('sales_user_id')
                 ->constrained('users')
                 ->onDelete('cascade');
 
-            // Product
+            /*
+            |--------------------------------------------------------------------------
+            | PRODUCT
+            |--------------------------------------------------------------------------
+            */
+
             $table->foreignId('product_id')
                 ->constrained('jewellery_products')
                 ->onDelete('cascade');
 
-            // Quantity selected
+            /*
+            |--------------------------------------------------------------------------
+            | QUANTITY
+            |--------------------------------------------------------------------------
+            */
+
             $table->integer('quantity')->default(1);
 
-            /* =====================
-             * GOLD SNAPSHOT
-             * ===================== */
-            $table->decimal('gross_weight', 10, 3)->nullable();      // grams
-            $table->decimal('net_weight', 10, 3)->nullable();        // grams
-            $table->decimal('fine_gold_weight', 10, 3)->nullable();  // grams
-            $table->decimal('purity_percent', 5, 2)->nullable();     // e.g. 91.60%
+            /*
+            |--------------------------------------------------------------------------
+            | GOLD SNAPSHOT
+            |--------------------------------------------------------------------------
+            */
 
-            $table->decimal('gold_rate', 10, 2)->nullable();         // rate per gram
-            $table->decimal('gold_value', 12, 2)->nullable();        // total gold value
+            $table->decimal('gross_weight', 10, 3)->nullable();
+            $table->decimal('net_weight', 10, 3)->nullable();
+            $table->decimal('fine_gold_weight', 10, 3)->nullable();
+            $table->decimal('purity_percent', 5, 2)->nullable();
+
+            /*
+            |--------------------------------------------------------------------------
+            | BUYING SNAPSHOT
+            |--------------------------------------------------------------------------
+            */
+
+            $table->decimal('buying_purity_percent', 5, 2)->nullable();
+            $table->decimal('buying_gold_weight', 10, 3)->nullable();
+
+            /*
+            |--------------------------------------------------------------------------
+            | RATE SNAPSHOT
+            |--------------------------------------------------------------------------
+            */
+
+            $table->decimal('gold_rate', 10, 2)->nullable();
+            $table->decimal('gold_value', 12, 2)->nullable();
             $table->decimal('making_charge', 12, 2)->nullable();
 
-            /* =====================
-             * SELLING
-             * ===================== */
+            /*
+            |--------------------------------------------------------------------------
+            | SELLING
+            |--------------------------------------------------------------------------
+            */
 
-            // Snapshot selling price (per item)
             $table->decimal('selling_price', 12, 2);
 
-            // ADD THIS (missing in your migration)
+            /*
+            |--------------------------------------------------------------------------
+            | PROFIT
+            |--------------------------------------------------------------------------
+            */
+
+            $table->decimal('profit_gold', 10, 4)->nullable();
             $table->decimal('total_profit', 12, 2)->nullable();
 
             $table->timestamps();

@@ -34,7 +34,6 @@ class MetalRateController extends Controller
         $validated = $request->validate([
             'metal' => 'required|in:gold,silver',
             'purity_percent' => 'required|numeric|min:0|max:100',
-            'buying_purity_percent' => 'required|numeric|min:0|max:100',
             'rate_per_gram' => 'required|numeric|min:0',
             'rate_date' => 'required|date',
         ]);
@@ -42,7 +41,7 @@ class MetalRateController extends Controller
         MetalRate::create($validated);
 
         return redirect()
-            ->route('admin.metal-rates.index')
+            ->route('admin.products.index')
             ->with('success', 'Metal rate added successfully.');
     }
 
@@ -51,7 +50,7 @@ class MetalRateController extends Controller
      */
     public function edit(MetalRate $metalRate)
     {
-        return view('admin.metal_rates.edit', compact('metalRate'));
+        return view('admin.products.index', compact('metalRate'));
     }
 
     /**
@@ -62,7 +61,6 @@ class MetalRateController extends Controller
         $validated = $request->validate([
             'metal' => 'required|in:gold,silver',
             'purity_percent' => 'required|numeric|min:0|max:100',
-            'buying_purity_percent' => 'required|numeric|min:0|max:100',
             'rate_per_gram' => 'required|numeric|min:0',
             'rate_date' => 'required|date',
         ]);
@@ -107,7 +105,7 @@ class MetalRateController extends Controller
         $metalRate->delete();
 
         return redirect()
-            ->route('admin.metal-rates.index')
+            ->route('admin.products.index')
             ->with('success', 'Metal rate deleted successfully.');
     }
 }

@@ -52,17 +52,19 @@ class OrderController extends Controller
 
         DB::transaction(function () use ($request) {
 
-            /** ======================
-             * CUSTOMER
-             * ===================== */
+            /* ======================
+            CUSTOMER
+            ====================== */
+
             $customer = Customer::firstOrCreate(
                 ['phone' => $request->phone],
                 ['name' => $request->customer_name]
             );
 
-            /** ======================
-             * ORDER
-             * ===================== */
+            /* ======================
+            CREATE ORDER
+            ====================== */
+
             $order = Order::create([
                 'invoice_number' => 'GARUD-' . strtoupper(Str::random(8)),
                 'customer_id' => $customer->id,
@@ -71,9 +73,10 @@ class OrderController extends Controller
                 'status' => 'pending',
             ]);
 
-            /** ======================
-             * CART ITEMS
-             * ===================== */
+            /* ======================
+            CART ITEMS
+            ====================== */
+
             $cartItems = Cart::with('product')
                 ->where('sales_user_id', auth()->id())
                 ->get();
@@ -81,17 +84,18 @@ class OrderController extends Controller
             $totalAmount = 0;
             $totalProfit = 0;
 
-            /** ======================
-             * ORDER ITEMS (use snapshot from cart)
-             * ===================== */
             foreach ($cartItems as $cart) {
+
+                /* ======================
+                CREATE ORDER ITEM
+                ====================== */
 
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $cart->product_id,
                     'quantity' => $cart->quantity,
 
-                    /* ===== GOLD SNAPSHOT ===== */
+                    /* GOLD SNAPSHOT */
                     'gross_weight' => $cart->gross_weight,
                     'net_weight' => $cart->net_weight,
                     'fine_gold_weight' => $cart->fine_gold_weight,
@@ -99,21 +103,27 @@ class OrderController extends Controller
 
                     'gold_rate' => $cart->gold_rate,
                     'gold_value' => $cart->gold_value,
-                    'making_charge' => $cart->making_charge ?? 0,
+                    'making_charge' => $cart->making_charge,
 
-                    /* ===== FINANCIAL SNAPSHOT ===== */
+                    /* BUYING SNAPSHOT */
+                    'buying_gold_weight' => $cart->buying_gold_weight,
+
+                    /* SELLING */
                     'selling_price' => $cart->selling_price,
-                    'cost_price' => $cart->gold_value, // already captured in cart
-                    'handling_cost' => $cart->making_charge ?? 0,
+
+                    /* PROFIT SNAPSHOT */
+                    'profit_gold' => $cart->profit_gold,
+                    'profit_cash' => $cart->total_profit,
                 ]);
 
                 $totalAmount += $cart->selling_price * $cart->quantity;
-                $totalProfit += $cart->total_profit; // **use stored total_profit from cart**
+                $totalProfit += $cart->total_profit;
             }
 
-            /** ======================
-             * PAYMENT
-             * ===================== */
+            /* ======================
+            PAYMENT
+            ====================== */
+
             Payment::create([
                 'order_id' => $order->id,
                 'amount' => $totalAmount,
@@ -121,26 +131,28 @@ class OrderController extends Controller
                 'status' => 'completed',
             ]);
 
-            /** ======================
-             * STOCK DEDUCTION
-             * ===================== */
+            /* ======================
+            STOCK REDUCTION
+            ====================== */
+
             foreach ($cartItems as $item) {
                 $item->product->decrement('stock_quantity', $item->quantity);
             }
-            // print_r($totalProfit);
-            // exit;
-            /** ======================
-             * FINAL ORDER UPDATE
-             * ===================== */
+
+            /* ======================
+            FINAL ORDER UPDATE
+            ====================== */
+
             $order->update([
                 'total_amount' => $totalAmount,
                 'total_profit' => $totalProfit,
                 'status' => 'completed',
             ]);
 
-            /** ======================
-             * CLEAR CART
-             * ===================== */
+            /* ======================
+            CLEAR CART
+            ====================== */
+
             Cart::where('sales_user_id', auth()->id())->delete();
         });
 

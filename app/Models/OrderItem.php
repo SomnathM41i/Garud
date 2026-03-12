@@ -11,7 +11,7 @@ class OrderItem extends Model
         'product_id',
         'quantity',
 
-        /* ===== GOLD SNAPSHOT ===== */
+        /* GOLD SNAPSHOT */
         'gross_weight',
         'net_weight',
         'fine_gold_weight',
@@ -21,10 +21,15 @@ class OrderItem extends Model
         'gold_value',
         'making_charge',
 
-        /* ===== FINANCIAL SNAPSHOT ===== */
+        /* BUYING SNAPSHOT */
+        'buying_gold_weight',
+
+        /* SELLING */
         'selling_price',
-        'cost_price',
-        'handling_cost',
+
+        /* PROFIT SNAPSHOT */
+        'profit_gold',
+        'profit_cash',
     ];
 
     /**

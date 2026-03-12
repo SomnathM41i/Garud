@@ -1176,13 +1176,13 @@
                     </li>
 
                     {{-- Categories --}}
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
                             href="{{ route('admin.categories.index') }}">
                             <i class="fas fa-list"></i>
                             <span>Jewellery Categories</span>
                         </a>
-                    </li>
+                    </li> -->
 
                     {{-- Products --}}
                     <li class="nav-item">

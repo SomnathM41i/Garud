@@ -40,15 +40,6 @@
                     @error('purity_percent')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                {{-- Buying Purity Percent --}}
-                <div class="form-group">
-                    <label class="form-label">Buying Purity (%) <span class="text-danger">*</span></label>
-                    <input type="number" step="0.01" name="buying_purity_percent"
-                        class="form-control @error('buying_purity_percent') is-invalid @enderror"
-                        value="{{ old('buying_purity_percent') }}" placeholder="e.g., 75">
-                    @error('buying_purity_percent')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
-
                 {{-- Rate per Gram --}}
                 <div class="form-group">
                     <label class="form-label">Rate per Gram (₹) <span class="text-danger">*</span></label>

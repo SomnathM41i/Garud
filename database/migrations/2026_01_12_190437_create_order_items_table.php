@@ -9,6 +9,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('order_items', function (Blueprint $table) {
+
             $table->id();
 
             $table->foreignId('order_id')
@@ -22,6 +23,7 @@ return new class extends Migration {
             $table->integer('quantity');
 
             /* ===== GOLD SNAPSHOT ===== */
+
             $table->decimal('gross_weight', 10, 3);
             $table->decimal('net_weight', 10, 3);
             $table->decimal('fine_gold_weight', 10, 3);
@@ -29,12 +31,21 @@ return new class extends Migration {
 
             $table->decimal('gold_rate', 10, 2);
             $table->decimal('gold_value', 12, 2);
-            $table->decimal('making_charge', 12, 2);
 
-            /* ===== FINANCIAL SNAPSHOT ===== */
+            $table->decimal('making_charge', 12, 2)->default(0);
+
+            /* ===== BUYING SNAPSHOT ===== */
+
+            $table->decimal('buying_gold_weight', 10, 3);
+
+            /* ===== SELLING ===== */
+
             $table->decimal('selling_price', 12, 2);
-            $table->decimal('cost_price', 12, 2);
-            $table->decimal('handling_cost', 12, 2)->default(0);
+
+            /* ===== PROFIT SNAPSHOT ===== */
+
+            $table->decimal('profit_gold', 10, 3)->default(0);
+            $table->decimal('profit_cash', 12, 2)->default(0);
 
             $table->timestamps();
         });
