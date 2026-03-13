@@ -31,22 +31,6 @@ class CartController extends Controller
         ));
     }
 
-//     public function index()
-// {
-//     $cartItems = Cart::with('product')
-//         ->where('sales_user_id', auth()->id())
-//         ->get();
-
-//     $totalAmount = $cartItems->sum(fn($item) => $item->selling_price * $item->quantity);
-//     $totalProfit = $cartItems->sum('total_profit');
-
-//     return view('admin.cart.index', compact(
-//         'cartItems',
-//         'totalAmount',
-//         'totalProfit'
-//     ));
-// }
-
     /**
      * Add product to cart
      */
