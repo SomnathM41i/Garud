@@ -367,14 +367,14 @@
     </div>
 
     {{-- Total Net Weight --}}
-    <div class="summary-card">
+    <!-- <div class="summary-card">
         <div class="sc-icon"><i class="fas fa-weight-hanging"></i></div>
         <div class="sc-label">Total Net Wt</div>
         <div class="sc-value" id="sc-net">
             {{ number_format($totals['net_weight'], 3) }}<span class="sc-unit">g</span>
         </div>
         <div class="sc-sub" id="sc-net-sub">gross minus stone</div>
-    </div>
+    </div> -->
 
     {{-- Total Cost / Amount --}}
     <div class="summary-card">
