@@ -12,39 +12,72 @@ class JewelleryProductController extends Controller
     /**
      * Display a listing of products.
      */
+    // public function index()
+    // {
+    //     $products = JewelleryProduct::get();
+
+    //     $totals = [
+    //         'gross_weight' => $products->sum(function ($product) {
+    //             return $product->gross_weight * $product->stock_quantity;
+    //         }),
+
+    //         'stone_weight' => $products->sum(function ($product) {
+    //             return $product->stone_weight * $product->stock_quantity;
+    //         }),
+
+    //         'net_weight' => $products->sum(function ($product) {
+    //             return $product->net_weight * $product->stock_quantity;
+    //         }),
+
+    //         'fine_gold_weight' => $products->sum(function ($product) {
+    //             return $product->fine_gold_weight * $product->stock_quantity;
+    //         }),
+
+    //         'cost_price' => $products->sum(function ($product) {
+    //             return $product->cost_price * $product->stock_quantity;
+    //         }),
+
+    //         'making_charge' => $products->sum(function ($product) {
+    //             return $product->making_charge * $product->stock_quantity;
+    //         }),
+    //     ];
+
+    //     $rates = \App\Models\MetalRate::orderByDesc('rate_date')->get();
+
+    //     return view('admin.products.index', compact('products', 'totals', 'rates'));
+    // }
+
     public function index()
     {
         $products = JewelleryProduct::get();
 
+        // ── Per-metal breakdowns ──────────────────────────────────────
+        $metalTotals = [];
+        foreach ($products->groupBy('metal_type') as $metal => $group) {
+            $metalTotals[$metal] = [
+                'gross_weight'    => $group->sum(fn($p) => $p->gross_weight    * $p->stock_quantity),
+                'stone_weight'    => $group->sum(fn($p) => $p->stone_weight    * $p->stock_quantity),
+                'net_weight'      => $group->sum(fn($p) => $p->net_weight      * $p->stock_quantity),
+                'fine_gold_weight'=> $group->sum(fn($p) => $p->fine_gold_weight * $p->stock_quantity),
+                'cost_price'      => $group->sum(fn($p) => $p->cost_price      * $p->stock_quantity),
+                'making_charge'   => $group->sum(fn($p) => $p->making_charge   * $p->stock_quantity),
+                'count'           => $group->count(),
+            ];
+        }
+
+        // ── Grand totals (all metals combined) ───────────────────────
         $totals = [
-            'gross_weight' => $products->sum(function ($product) {
-                return $product->gross_weight * $product->stock_quantity;
-            }),
-
-            'stone_weight' => $products->sum(function ($product) {
-                return $product->stone_weight * $product->stock_quantity;
-            }),
-
-            'net_weight' => $products->sum(function ($product) {
-                return $product->net_weight * $product->stock_quantity;
-            }),
-
-            'fine_gold_weight' => $products->sum(function ($product) {
-                return $product->fine_gold_weight * $product->stock_quantity;
-            }),
-
-            'cost_price' => $products->sum(function ($product) {
-                return $product->cost_price * $product->stock_quantity;
-            }),
-
-            'making_charge' => $products->sum(function ($product) {
-                return $product->making_charge * $product->stock_quantity;
-            }),
+            'gross_weight'     => $products->sum(fn($p) => $p->gross_weight     * $p->stock_quantity),
+            'stone_weight'     => $products->sum(fn($p) => $p->stone_weight     * $p->stock_quantity),
+            'net_weight'       => $products->sum(fn($p) => $p->net_weight       * $p->stock_quantity),
+            'fine_gold_weight' => $products->sum(fn($p) => $p->fine_gold_weight * $p->stock_quantity),
+            'cost_price'       => $products->sum(fn($p) => $p->cost_price       * $p->stock_quantity),
+            'making_charge'    => $products->sum(fn($p) => $p->making_charge    * $p->stock_quantity),
         ];
 
         $rates = \App\Models\MetalRate::orderByDesc('rate_date')->get();
 
-        return view('admin.products.index', compact('products', 'totals', 'rates'));
+        return view('admin.products.index', compact('products', 'totals', 'metalTotals', 'rates'));
     }
 
 

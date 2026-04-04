@@ -79,6 +79,60 @@
     }
 
     /* ══════════════════════════════════════════
+       PER-METAL CARD GROUPS
+    ══════════════════════════════════════════ */
+    .metal-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .metal-group-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .metal-group-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.25rem 0.85rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .metal-group-badge.gold-badge {
+        background: rgba(212,175,55,0.15);
+        color: #b8860b;
+        border: 1.5px solid rgba(212,175,55,0.35);
+    }
+
+    .metal-group-badge.silver-badge {
+        background: rgba(148,163,184,0.15);
+        color: #64748b;
+        border: 1.5px solid rgba(148,163,184,0.35);
+    }
+
+    .metal-group-badge.other-badge {
+        background: rgba(100,100,100,0.1);
+        color: var(--text-muted);
+        border: 1.5px solid var(--border-color);
+    }
+
+    /* Gold group – golden accent stripe */
+    .metal-group.gold-group  .summary-card::before { background: linear-gradient(90deg, #d4af37, #f5d06e); }
+    .metal-group.gold-group  .summary-card .sc-icon { background: rgba(212,175,55,0.12); color: #b8860b; }
+    .metal-group.gold-group  .summary-card .sc-value { color: var(--text-primary); }
+
+    /* Silver group – silver accent stripe */
+    .metal-group.silver-group .summary-card::before { background: linear-gradient(90deg, #94a3b8, #cbd5e1); }
+    .metal-group.silver-group .summary-card .sc-icon { background: rgba(148,163,184,0.15); color: #64748b; }
+    .metal-group.silver-group .summary-card .sc-value { color: var(--text-primary); }
+
+    /* ══════════════════════════════════════════
        METAL TYPE FILTER TABS
     ══════════════════════════════════════════ */
     .metal-filter-wrap {
@@ -159,7 +213,6 @@
         border-bottom: 1px solid var(--border-color);
         font-size: 0.78rem;
         color: var(--text-secondary);
-        transition: all 0.2s ease;
     }
 
     .metal-totals-bar span {
@@ -182,9 +235,7 @@
     /* ══════════════════════════════════════════
        PRODUCT TABLE
     ══════════════════════════════════════════ */
-    .products-table-wrap {
-        overflow-x: auto;
-    }
+    .products-table-wrap { overflow-x: auto; }
 
     .products-table {
         width: 100%;
@@ -192,9 +243,7 @@
         font-size: 0.875rem;
     }
 
-    .products-table thead tr {
-        background: var(--bg-tertiary);
-    }
+    .products-table thead tr { background: var(--bg-tertiary); }
 
     .products-table th {
         padding: 0.65rem 1rem;
@@ -214,20 +263,12 @@
         vertical-align: middle;
     }
 
-    .products-table tbody tr:last-child td {
-        border-bottom: none;
-    }
+    .products-table tbody tr:last-child td { border-bottom: none; }
+    .products-table tbody tr:hover { background: var(--bg-secondary); }
 
-    .products-table tbody tr:hover {
-        background: var(--bg-secondary);
-    }
+    .product-row[data-hidden="true"] { display: none; }
 
-    /* product row hidden when filtered */
-    .product-row[data-hidden="true"] {
-        display: none;
-    }
-
-    /* Metal badge in table */
+    /* Metal badge */
     .metal-badge {
         display: inline-flex;
         align-items: center;
@@ -242,7 +283,7 @@
     .metal-badge.silver { background: rgba(148,163,184,0.15); color: #94a3b8; }
     .metal-badge.other  { background: rgba(100,100,100,0.1);  color: var(--text-muted); }
 
-    /* stock / status badges */
+    /* stock / status */
     .stock-badge {
         display: inline-block;
         padding: 0.2rem 0.6rem;
@@ -251,11 +292,11 @@
         font-weight: 700;
     }
 
-    .stock-ok    { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .stock-ok    { background: rgba(34,197,94,0.12);  color: #22c55e; }
     .stock-low   { background: rgba(234,179,8,0.12);  color: #eab308; }
     .stock-out   { background: rgba(239,68,68,0.12);  color: #ef4444; }
-    .status-on   { background: rgba(34,197,94,0.12); color: #22c55e; }
-    .status-off  { background: rgba(239,68,68,0.12); color: #ef4444; }
+    .status-on   { background: rgba(34,197,94,0.12);  color: #22c55e; }
+    .status-off  { background: rgba(239,68,68,0.12);  color: #ef4444; }
 
     /* empty state */
     .no-rows-msg {
@@ -274,7 +315,7 @@
     }
 
     /* ══════════════════════════════════════════
-       METAL RATES SECTION (unchanged design, kept clean)
+       METAL RATES SECTION
     ══════════════════════════════════════════ */
     .mr-section { padding: 1rem 1.5rem 0; }
     .mr-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 1px 3px var(--card-shadow); margin-bottom: 1.25rem; overflow: hidden; }
@@ -285,7 +326,7 @@
     .mr-header-title { font-size: 0.9375rem; font-weight: 700; color: var(--text-primary); margin: 0; line-height: 1.2; }
     .mr-header-sub { font-size: 0.75rem; color: var(--text-muted); margin: 0; line-height: 1.2; }
     .mr-btn-add { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.45rem 0.9rem; border-radius: 8px; background: var(--accent-gradient); color: white; font-size: 0.8125rem; font-weight: 600; border: none; cursor: pointer; white-space: nowrap; box-shadow: 0 2px 8px rgba(212,175,55,0.3); transition: all 0.2s ease; }
-    .mr-btn-add:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(212,175,55,0.4); }
+    .mr-btn-add:hover { opacity: 0.9; transform: translateY(-1px); }
     .mr-add-panel { display: none; padding: 1rem 1.25rem; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); animation: mrSlideDown 0.22s ease; }
     .mr-add-panel.open { display: block; }
     @keyframes mrSlideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
@@ -318,11 +359,13 @@
     .mr-actions { display: flex; gap: 0.4rem; align-items: center; }
     .mr-empty { text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: 0.875rem; }
     .mr-empty i { display: block; font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.4; }
+
     @media (max-width: 768px) {
         .mr-section { padding: 0.75rem 1rem 0; }
         .mr-add-panel .mr-form-row { flex-direction: column; }
         .mr-table th:nth-child(5), .mr-table td:nth-child(5) { display: none; }
         .summary-grid { grid-template-columns: repeat(2, 1fr); }
+        .metal-breakdown { flex-direction: column; }
     }
 </style>
 
@@ -334,69 +377,93 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════
-     SUMMARY CARDS
+     PER-METAL SUMMARY CARD ROWS
+     One row of 5 cards per metal type present
 ═══════════════════════════════════════════════ -->
-<div class="summary-grid" id="summaryGrid">
+@php
+    $metalConfig = [
+        'gold'   => ['emoji' => '🥇', 'label' => 'Gold',   'group' => 'gold-group',   'badge' => 'gold-badge',   'fine_label' => 'Fine Gold Wt',   'sub_gross' => 'gross gold weight',   'sub_fine' => 'net fine gold'],
+        'silver' => ['emoji' => '🥈', 'label' => 'Silver', 'group' => 'silver-group', 'badge' => 'silver-badge', 'fine_label' => 'Fine Silver Wt', 'sub_gross' => 'gross silver weight', 'sub_fine' => 'net fine silver'],
+    ];
+@endphp
 
-    {{-- Total Products --}}
-    <div class="summary-card">
-        <div class="sc-icon"><i class="fas fa-gem"></i></div>
-        <div class="sc-label">Total Products</div>
-        <div class="sc-value" id="sc-products">{{ $products->count() }}</div>
-        <div class="sc-sub" id="sc-products-sub">{{ $products->where('status','active')->count() }} active</div>
+@foreach($metalTotals as $metal => $mt)
+@php
+    $cfg = $metalConfig[$metal] ?? [
+        'emoji'       => '⚙️',
+        'label'       => ucfirst($metal),
+        'group'       => 'other-group',
+        'badge'       => 'other-badge',
+        'fine_label'  => 'Fine Wt',
+        'sub_gross'   => 'gross weight',
+        'sub_fine'    => 'net fine weight',
+    ];
+    $activeCount = $products->where('metal_type', $metal)->where('status', 'active')->count();
+@endphp
+
+<div class="metal-group {{ $cfg['group'] }}" data-metal-group="{{ $metal }}">
+
+    {{-- Group header --}}
+    <div class="metal-group-header">
+        <span class="metal-group-badge {{ $cfg['badge'] }}">
+            {{ $cfg['emoji'] }} {{ $cfg['label'] }}
+        </span>
+        <span style="font-size:0.72rem; color:var(--text-muted);">
+            {{ $mt['count'] }} product{{ $mt['count'] !== 1 ? 's' : '' }}
+            &nbsp;·&nbsp; {{ $activeCount }} active
+        </span>
     </div>
 
-    {{-- Total Gross Weight --}}
-    <div class="summary-card">
-        <div class="sc-icon"><i class="fas fa-balance-scale"></i></div>
-        <div class="sc-label">Total Gross Wt</div>
-        <div class="sc-value" id="sc-gross">
-            {{ number_format($totals['gross_weight'], 3) }}<span class="sc-unit">g</span>
+    {{-- 5-card row --}}
+    <div class="summary-grid">
+
+        {{-- Total Products --}}
+        <div class="summary-card">
+            <div class="sc-icon"><i class="fas fa-gem"></i></div>
+            <div class="sc-label">Total Products</div>
+            <div class="sc-value">{{ $mt['count'] }}</div>
+            <div class="sc-sub">{{ $activeCount }} active</div>
         </div>
-        <div class="sc-sub" id="sc-gross-sub">across all metals</div>
+
+        {{-- Gross Weight --}}
+        <div class="summary-card">
+            <div class="sc-icon"><i class="fas fa-balance-scale"></i></div>
+            <div class="sc-label">Total Gross Wt</div>
+            <div class="sc-value">
+                {{ number_format($mt['gross_weight'], 3) }}<span class="sc-unit">g</span>
+            </div>
+            <div class="sc-sub">{{ $cfg['sub_gross'] }}</div>
+        </div>
+
+        {{-- Fine Weight (Gold → Fine Gold, Silver → Fine Silver) --}}
+        <div class="summary-card">
+            <div class="sc-icon"><i class="fas fa-coins"></i></div>
+            <div class="sc-label">{{ $cfg['fine_label'] }}</div>
+            <div class="sc-value">
+                {{ number_format($mt['fine_gold_weight'], 3) }}<span class="sc-unit">g</span>
+            </div>
+            <div class="sc-sub">{{ $cfg['sub_fine'] }}</div>
+        </div>
+
+        {{-- Total Amount --}}
+        <div class="summary-card">
+            <div class="sc-icon"><i class="fas fa-rupee-sign"></i></div>
+            <div class="sc-label">Total Amount</div>
+            <div class="sc-value">₹{{ number_format($mt['cost_price'], 0) }}</div>
+            <div class="sc-sub">cost price × qty</div>
+        </div>
+
+        {{-- Making Charges --}}
+        <div class="summary-card">
+            <div class="sc-icon"><i class="fas fa-tools"></i></div>
+            <div class="sc-label">Making Charges</div>
+            <div class="sc-value">₹{{ number_format($mt['making_charge'], 0) }}</div>
+            <div class="sc-sub">total making × qty</div>
+        </div>
+
     </div>
-
-    {{-- Total Fine Gold Weight --}}
-    <div class="summary-card">
-        <div class="sc-icon"><i class="fas fa-coins"></i></div>
-        <div class="sc-label">Total Fine Gold Wt</div>
-        <div class="sc-value" id="sc-finegold">
-            {{ number_format($totals['fine_gold_weight'], 3) }}<span class="sc-unit">g</span>
-        </div>
-        <div class="sc-sub" id="sc-finegold-sub">net fine weight</div>
-    </div>
-
-    {{-- Total Net Weight --}}
-    <!-- <div class="summary-card">
-        <div class="sc-icon"><i class="fas fa-weight-hanging"></i></div>
-        <div class="sc-label">Total Net Wt</div>
-        <div class="sc-value" id="sc-net">
-            {{ number_format($totals['net_weight'], 3) }}<span class="sc-unit">g</span>
-        </div>
-        <div class="sc-sub" id="sc-net-sub">gross minus stone</div>
-    </div> -->
-
-    {{-- Total Cost / Amount --}}
-    <div class="summary-card">
-        <div class="sc-icon"><i class="fas fa-rupee-sign"></i></div>
-        <div class="sc-label">Total Amount</div>
-        <div class="sc-value" id="sc-amount">
-            ₹{{ number_format($totals['cost_price'], 0) }}
-        </div>
-        <div class="sc-sub" id="sc-amount-sub">cost price × qty</div>
-    </div>
-
-    {{-- Total Making Charge --}}
-    <div class="summary-card">
-        <div class="sc-icon"><i class="fas fa-tools"></i></div>
-        <div class="sc-label">Making Charges</div>
-        <div class="sc-value" id="sc-making">
-            ₹{{ number_format($totals['making_charge'], 0) }}
-        </div>
-        <div class="sc-sub" id="sc-making-sub">total making × qty</div>
-    </div>
-
 </div>
+@endforeach
 
 <!-- ═══════════════════════════════════════════════
      METAL RATES SECTION
@@ -535,6 +602,12 @@
 <!-- ═══════════════════════════════════════════════
      PRODUCTS TABLE CARD
 ═══════════════════════════════════════════════ -->
+
+{{-- Pass per-metal data to JS --}}
+<script>
+    const metalTotalsData = @json($metalTotals);
+</script>
+
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h3 class="card-title mb-0">
@@ -548,16 +621,13 @@
     </div>
 
     {{-- ── Metal Type Filter Tabs ── --}}
-    @php
-        $metalTypes = $products->pluck('metal_type')->unique()->sort()->values();
-    @endphp
+    @php $metalTypes = $products->pluck('metal_type')->unique()->sort()->values(); @endphp
 
     <div class="metal-filter-wrap">
         <span class="metal-filter-label"><i class="fas fa-filter me-1"></i> Filter:</span>
 
         <button class="mf-tab active" data-metal="all" onclick="filterMetal('all', this)">
-            All
-            <span class="mf-count">{{ $products->count() }}</span>
+            All <span class="mf-count">{{ $products->count() }}</span>
         </button>
 
         @foreach($metalTypes as $mt)
@@ -582,7 +652,9 @@
         <span class="sep">|</span>
         <span>
             <i class="fas fa-coins" style="opacity:0.5; font-size:0.7rem;"></i>
-            Fine Gold: <strong id="bar-fine">{{ number_format($totals['fine_gold_weight'],3) }} g</strong>
+            {{-- Label updates via JS when a metal tab is clicked --}}
+            <span id="bar-fine-label">Fine Wt:</span>
+            <strong id="bar-fine">{{ number_format($totals['fine_gold_weight'],3) }} g</strong>
         </span>
         <span class="sep">|</span>
         <span>
@@ -608,7 +680,8 @@
                         <th style="text-align:right;">Gross Wt</th>
                         <th style="text-align:right;">Stone Wt</th>
                         <th style="text-align:right;">Purity %</th>
-                        <th style="text-align:right;">Fine Gold</th>
+                        {{-- This column header updates dynamically --}}
+                        <th style="text-align:right;" id="th-fine-wt">Fine Wt</th>
                         <th style="text-align:right;">Amount (₹)</th>
                         <th style="text-align:right;">Making (₹)</th>
                         <th>Stock</th>
@@ -652,6 +725,7 @@
 
                         <td style="text-align:right;">{{ $product->purity_percent }}%</td>
 
+                        {{-- Fine weight value – same field for all metals, label distinguishes context --}}
                         <td style="text-align:right; font-variant-numeric:tabular-nums;">
                             <span style="font-weight:600; color:var(--accent-primary);">
                                 {{ number_format($product->fine_gold_weight, 3) }}
@@ -720,20 +794,19 @@
                 </tbody>
             </table>
 
-            {{-- Empty message when filter yields nothing --}}
             <div class="no-rows-msg" id="noRowsMsg">
                 <i class="fas fa-gem"></i>
                 No products found for this metal type.
             </div>
         </div>
 
-        {{-- Footer totals row --}}
+        {{-- Footer totals --}}
         <div style="display:flex; flex-wrap:wrap; gap:1rem; padding:0.75rem 1.25rem; border-top:1px solid var(--border-color); background:var(--bg-tertiary); font-size:0.8rem; color:var(--text-muted);">
             <span>Showing <strong id="footer-showing" style="color:var(--text-primary);">{{ $products->count() }}</strong> products</span>
             <span style="color:var(--border-color);">|</span>
             <span>Gross: <strong id="footer-gross" style="color:var(--text-primary);">{{ number_format($totals['gross_weight'],3) }} g</strong></span>
             <span style="color:var(--border-color);">|</span>
-            <span>Fine Gold: <strong id="footer-fine" style="color:var(--accent-primary);">{{ number_format($totals['fine_gold_weight'],3) }} g</strong></span>
+            <span><span id="footer-fine-label">Fine Wt:</span> <strong id="footer-fine" style="color:var(--accent-primary);">{{ number_format($totals['fine_gold_weight'],3) }} g</strong></span>
             <span style="color:var(--border-color);">|</span>
             <span>Total Amount: <strong id="footer-amount" style="color:var(--text-primary);">₹{{ number_format($totals['cost_price'],0) }}</strong></span>
         </div>
@@ -746,13 +819,35 @@
     }
 
     /**
-     * Filter products by metal type and recompute the totals bar + footer.
+     * Returns the correct "fine weight" label for a given metal.
+     * gold   → "Fine Gold Wt"
+     * silver → "Fine Silver Wt"
+     * all    → "Fine Wt"
+     * other  → "Fine Wt"
+     */
+    function fineLabel(metal) {
+        if (metal === 'gold')   return 'Fine Gold Wt:';
+        if (metal === 'silver') return 'Fine Silver Wt:';
+        return 'Fine Wt:';
+    }
+
+    /**
+     * Filter products by metal type and recompute the totals bar, footer.
+     * Also visually highlights the matching metal-group card row.
      */
     function filterMetal(metal, btn) {
-        // Update active tab
+        // ── Update active tab ───────────────────────────────────────
         document.querySelectorAll('.mf-tab').forEach(t => t.classList.remove('active'));
         btn.classList.add('active');
 
+        // ── Highlight matching metal group ──────────────────────────
+        document.querySelectorAll('.metal-group').forEach(g => {
+            const gm = g.dataset.metalGroup;
+            g.style.opacity = (metal === 'all' || gm === metal) ? '1' : '0.35';
+            g.style.transition = 'opacity 0.2s ease';
+        });
+
+        // ── Walk rows ───────────────────────────────────────────────
         const rows = document.querySelectorAll('.product-row');
         let visibleCount = 0;
         let gross = 0, fine = 0, amount = 0, making = 0;
@@ -771,16 +866,24 @@
             }
         });
 
-        // Show/hide empty state
+        // ── Empty state ─────────────────────────────────────────────
         document.getElementById('noRowsMsg').style.display = visibleCount === 0 ? 'block' : 'none';
 
-        // Update totals bar
-        document.getElementById('bar-gross').textContent   = fmt(gross, 3) + ' g';
-        document.getElementById('bar-fine').textContent    = fmt(fine, 3) + ' g';
-        document.getElementById('bar-amount').textContent  = '₹' + fmt(amount, 0);
-        document.getElementById('bar-count').textContent   = visibleCount;
+        // ── Fine-weight labels ──────────────────────────────────────
+        const label = fineLabel(metal);
+        document.getElementById('bar-fine-label').textContent    = label;
+        document.getElementById('footer-fine-label').textContent = label;
+        document.getElementById('th-fine-wt').textContent =
+            metal === 'gold'   ? 'Fine Gold Wt'   :
+            metal === 'silver' ? 'Fine Silver Wt'  : 'Fine Wt';
 
-        // Update footer
+        // ── Totals bar ──────────────────────────────────────────────
+        document.getElementById('bar-gross').textContent  = fmt(gross, 3) + ' g';
+        document.getElementById('bar-fine').textContent   = fmt(fine, 3) + ' g';
+        document.getElementById('bar-amount').textContent = '₹' + fmt(amount, 0);
+        document.getElementById('bar-count').textContent  = visibleCount;
+
+        // ── Footer ──────────────────────────────────────────────────
         document.getElementById('footer-showing').textContent = visibleCount;
         document.getElementById('footer-gross').textContent   = fmt(gross, 3) + ' g';
         document.getElementById('footer-fine').textContent    = fmt(fine, 3) + ' g';
