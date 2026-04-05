@@ -109,8 +109,8 @@
                     <button type="button"
                             id="calcStoneBtn"
                             class="btn btn-outline-secondary"
-                            title="Auto-calculate Stone Weight from Buying Purity">
-                        <i class="fas fa-calculator"></i> Calc Stone Wt
+                            title="Auto-calculate Fine Metal Weight from Buying Purity">
+                        <i class="fas fa-calculator"></i> Calc Fine Wt
                     </button>
                 </div>
 
