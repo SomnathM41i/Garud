@@ -82,10 +82,11 @@
                 <label class="form-label">Buying Purity (%)</label>
 
                 <input type="number"
-                       step="0.01"
-                       name="buying_purity_percent"
-                       class="form-control @error('buying_purity_percent') is-invalid @enderror"
-                       value="{{ old('buying_purity_percent') }}">
+                    step="0.01"
+                    id="buying_purity_percent"        
+                    name="buying_purity_percent"
+                    class="form-control @error('buying_purity_percent') is-invalid @enderror"
+                    value="{{ old('buying_purity_percent') }}">
 
                 @error('buying_purity_percent')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -97,15 +98,28 @@
             <div class="form-group">
                 <label class="form-label">Gross Weight (gm)</label>
 
-                <input type="number"
-                       step="0.001"
-                       id="gross_weight"
-                       name="gross_weight"
-                       class="form-control @error('gross_weight') is-invalid @enderror"
-                       value="{{ old('gross_weight') }}">
+                <div class="input-group">                         
+                    <input type="number"
+                        step="0.001"
+                        id="gross_weight"
+                        name="gross_weight"
+                        class="form-control @error('gross_weight') is-invalid @enderror"
+                        value="{{ old('gross_weight') }}">
+
+                    <button type="button"
+                            id="calcStoneBtn"
+                            class="btn btn-outline-secondary"
+                            title="Auto-calculate Stone Weight from Buying Purity">
+                        <i class="fas fa-calculator"></i> Calc Stone Wt
+                    </button>
+                </div>
+
+                <small class="text-muted mt-1 d-block">
+                    Fine Metal Weight: <strong id="fine_metal_display">—</strong> gm
+                </small>
 
                 @error('gross_weight')
-                    <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
 
@@ -291,6 +305,39 @@ grossEl.addEventListener('input', calculate);
 stoneEl.addEventListener('input', calculate);
 purityEl.addEventListener('change', calculate);
 
+
+// ── STONE WEIGHT AUTO-CALC FROM BUYING PURITY ──────────────────────────
+const buyingPurityEl = document.getElementById('buying_purity_percent');
+const calcStoneBtn   = document.getElementById('calcStoneBtn');
+
+calcStoneBtn.addEventListener('click', function () {
+
+    const gross        = parseFloat(grossEl.value) || 0;
+    const buyingPurity = parseFloat(buyingPurityEl.value) || 0;
+
+    if (gross <= 0) {
+        alert('Please enter Gross Weight first.');
+        return;
+    }
+
+    if (buyingPurity <= 0 || buyingPurity > 100) {
+        alert('Please enter a valid Buying Purity (1–100).');
+        return;
+    }
+
+    // fine gold weight based on buying purity
+    const fineGoldFromBuying = gross * buyingPurity / 100;
+
+    // stone weight = gross - fine gold from buying purity
+    const calculatedStone = Math.max(gross - fineGoldFromBuying, 0);
+
+    stoneEl.value = calculatedStone.toFixed(3);
+
+    document.getElementById('fine_metal_display').textContent = fineGoldFromBuying.toFixed(3);
+
+    // re-run selling calculation so cost_price updates too
+    calculate();
+});
 </script>
 
 @endsection
