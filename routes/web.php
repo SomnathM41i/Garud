@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\CartController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\BorrowingController;
 
 
 use Illuminate\Support\Facades\Artisan;
@@ -65,6 +66,10 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('payments', PaymentController::class);
         Route::resource('metal-rates', MetalRateController::class);
         Route::resource('settings', HomeController::class);
+
+        Route::get('borrowings', [BorrowingController::class, 'index'])->name('borrowings.index');
+        Route::get('borrowings/{borrowing}', [BorrowingController::class, 'show'])->name('borrowings.show');
+        Route::post('borrowings/{borrowing}/payment', [BorrowingController::class, 'addPayment'])->name('borrowings.addPayment');
 
         Route::get('reports/profit-loss', [ReportController::class, 'profitLoss'])->name('reports.profit_loss');
 

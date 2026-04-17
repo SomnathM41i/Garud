@@ -1219,6 +1219,15 @@
                             <span>Profit & Loss</span>
                         </a>
                     </li>
+
+                    {{-- Borrowings --}}
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.borrowings.index') ? 'active' : '' }}"
+                            href="{{ route('admin.borrowings.index') }}">
+                            <i class="fas fa-hand-holding-usd"></i>
+                            <span>Borrowings</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
         @endif

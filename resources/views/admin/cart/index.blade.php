@@ -258,22 +258,135 @@
                     </div>
 
 
+                    {{-- PAYMENT TYPE TOGGLE --}}
                     <div class="mb-3">
 
-                        <label class="form-label">
-                            Payment Method
+                        <label class="form-label fw-semibold">
+                            Payment Type
                         </label>
 
-                        <select name="payment_method"
-                                class="form-control form-select"
-                                required>
+                        <div class="d-flex gap-4">
 
-                            <option value="cash">Cash</option>
-                            <option value="upi">UPI</option>
-                            <option value="card">Card</option>
-                            <option value="other">Other</option>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment_type"
+                                       id="type_full" value="full"
+                                       {{ old('payment_type', 'full') === 'full' ? 'checked' : '' }}
+                                       onchange="togglePaymentType()">
+                                <label class="form-check-label" for="type_full">Full Payment</label>
+                            </div>
 
-                        </select>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment_type"
+                                       id="type_borrow" value="borrow"
+                                       {{ old('payment_type') === 'borrow' ? 'checked' : '' }}
+                                       onchange="togglePaymentType()">
+                                <label class="form-check-label" for="type_borrow">Borrowing ( उधार )</label>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- FULL PAYMENT FIELDS --}}
+                    <div id="section_full">
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Payment Method
+                            </label>
+
+                            <select name="payment_method"
+                                    class="form-control form-select">
+
+                                <option value="cash">Cash</option>
+                                <option value="upi">UPI</option>
+                                <option value="card">Card</option>
+                                <option value="other">Other</option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- BORROWING FIELDS --}}
+                    <div id="section_borrow" style="display:none;">
+
+                        <div class="alert alert-warning py-2">
+                            ग्राहक आता प्रॉडक्ट घेतोय आणि उरलेली रक्कम नंतर देईल.
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                   आता दिलेले पैसे (₹)
+                                </label>
+
+                                <input type="number"
+                                       name="upfront_amount"
+                                       class="form-control"
+                                       value="{{ old('upfront_amount', 0) }}"
+                                       min="0"
+                                       step="0.01"
+                                       placeholder="0 if nothing paid today">
+
+                                <div class="form-text">Leave 0 if customer pays nothing today.</div>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                   Payment Method (आता दिलेल्या पैशांसाठी)
+                                </label>
+
+                                <select name="payment_method"
+                                        class="form-control form-select">
+
+                                    <option value="cash">Cash</option>
+                                    <option value="upi">UPI</option>
+                                    <option value="card">Card</option>
+                                    <option value="other">Other</option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                   Expected Full Payment By (पूर्ण पैसे भरण्याची अपेक्षित तारीख)
+                                </label>
+
+                                <input type="date"
+                                       name="due_date"
+                                       class="form-control"
+                                       value="{{ old('due_date') }}">
+
+                                <div class="form-text">Optional</div>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Notes
+                                </label>
+
+                                <input type="text"
+                                       name="borrow_notes"
+                                       class="form-control"
+                                       value="{{ old('borrow_notes') }}"
+                                       placeholder="e.g. Customer will pay after Diwali">
+
+                            </div>
+
+                        </div>
 
                     </div>
 
@@ -297,5 +410,14 @@
 </div>
 
 @endif
+
+<script>
+function togglePaymentType() {
+    const isBorrow = document.getElementById('type_borrow').checked;
+    document.getElementById('section_full').style.display   = isBorrow ? 'none' : '';
+    document.getElementById('section_borrow').style.display = isBorrow ? '' : 'none';
+}
+togglePaymentType();
+</script>
 
 @endsection

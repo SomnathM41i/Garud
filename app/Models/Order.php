@@ -14,17 +14,15 @@ class Order extends Model
         'status',
     ];
 
-    /**
-     * Cast numeric values correctly
-     */
     protected $casts = [
         'total_amount' => 'decimal:2',
         'total_profit' => 'decimal:2',
     ];
 
-    /**
-     * Relationships
-     */
+    /* =====================
+       RELATIONSHIPS
+    ===================== */
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);
@@ -40,16 +38,16 @@ class Order extends Model
         return $this->hasOne(Payment::class);
     }
 
-    /**
-     * =====================
-     * BUSINESS HELPERS
-     * =====================
-     */
+    // NEW: borrowing relationship
+    public function borrowing()
+    {
+        return $this->hasOne(Borrowing::class);
+    }
 
-    /**
-     * Total cost of this order
-     * (product cost + handling cost)
-     */
+    /* =====================
+       HELPERS
+    ===================== */
+
     public function getTotalCostAttribute()
     {
         return $this->items->sum(function ($item) {
@@ -57,29 +55,19 @@ class Order extends Model
         });
     }
 
-    /**
-     * Real profit (safe fallback)
-     * Uses stored profit if available
-     */
-    // public function getProfitAttribute()
-    // {
-    //     if ($this->total_profit > 0) {
-    //         return $this->total_profit;
-    //     }
+    public function getProfitAttribute()
+    {
+        return $this->items->sum->profit;
+    }
 
-    //     return $this->total_amount - $this->total_cost;
-    // }
-
-    /**
-     * Check order state
-     */
     public function isCompleted(): bool
     {
         return $this->status === 'completed';
     }
 
-    public function getProfitAttribute()
+    // NEW helper: check if this order is on borrowing
+    public function isBorrowed(): bool
     {
-        return $this->items->sum->profit;
+        return $this->borrowing()->exists();
     }
 }
