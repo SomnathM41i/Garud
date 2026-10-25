@@ -85,12 +85,22 @@
                 <div class="col-md-6">
                     <p>
                         <strong>Payment Method:</strong>
-                        {{ strtoupper($order->payment->payment_method) }}
+                        {{ $order->payment ? strtoupper($order->payment->payment_method) : ($order->borrowing ? 'BORROWING' : 'N/A') }}
                     </p>
                     <p>
                         <strong>Payment Status:</strong>
-                        {{ ucfirst($order->payment->status) }}
+                        {{ $order->payment ? ucfirst($order->payment->status) : ($order->borrowing ? ucfirst($order->borrowing->status) : 'N/A') }}
                     </p>
+                    @if(!$order->payment && $order->borrowing)
+                        <p>
+                            <strong>Paid:</strong>
+                            ₹{{ number_format($order->borrowing->paid_amount, 2) }}
+                        </p>
+                        <p>
+                            <strong>Remaining:</strong>
+                            ₹{{ number_format($order->borrowing->remaining_amount, 2) }}
+                        </p>
+                    @endif
                 </div>
 
                 <div class="col-md-6 text-end">
