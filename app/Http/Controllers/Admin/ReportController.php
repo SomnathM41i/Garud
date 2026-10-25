@@ -4,69 +4,115 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Order;
 use App\Models\OrderItem;
-use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
     /**
-     * Profit & Loss Report
+     * Profit & Loss Report - Gold and Silver
      */
     public function profitLoss(Request $request)
     {
         /*
         |--------------------------------------------------------------------------
-        | GET COMPLETED ORDERS
+        | GOLD ITEMS
         |--------------------------------------------------------------------------
         */
 
-        $orders = Order::with('customer')
-            ->where('status', 'completed')
-            ->latest()
+        $goldItems = OrderItem::with([
+            'order.customer',
+            'product'
+        ])
+            ->whereHas('order', function ($query) {
+                $query->where('status', 'completed');
+            })
+            ->whereHas('product', function ($query) {
+                $query->whereRaw('LOWER(metal_type) = ?', ['gold']);
+            })
+            ->whereHas('order')
             ->get();
 
         /*
         |--------------------------------------------------------------------------
-        | TOTAL REVENUE
+        | SILVER ITEMS
         |--------------------------------------------------------------------------
         */
 
-        $totalRevenue = Order::where('status', 'completed')
-            ->sum('total_amount');
-
-        /*
-        |--------------------------------------------------------------------------
-        | ORDER ITEM REPORT DATA
-        |--------------------------------------------------------------------------
-        */
-
-        $report = OrderItem::select(
-                DB::raw('SUM(profit_cash) as total_profit_cash'),
-                DB::raw('SUM(profit_gold) as total_profit_gold'),
-                DB::raw('SUM(fine_gold_weight * quantity) as total_gold_sold')
-            )
+        $silverItems = OrderItem::with([
+            'order.customer',
+            'product'
+        ])
             ->whereHas('order', function ($query) {
                 $query->where('status', 'completed');
             })
-            ->first();
+            ->whereHas('product', function ($query) {
+                $query->whereRaw('LOWER(metal_type) = ?', ['silver']);
+            })
+            ->whereHas('order')
+            ->get();
 
         /*
         |--------------------------------------------------------------------------
-        | FINAL TOTALS
+        | GOLD TOTALS
         |--------------------------------------------------------------------------
         */
 
-        $totalProfitCash = $report->total_profit_cash ?? 0;
-        $totalProfitGold = $report->total_profit_gold ?? 0;
-        $totalGoldSold   = $report->total_gold_sold ?? 0;
-// dd($orders->toArray());
+        $totalGoldRevenue = $goldItems->sum('selling_price');
+
+        $totalGoldProfitCash = $goldItems->sum(function ($item) {
+            return $item->profit_gold * $item->gold_rate;
+        });
+
+        $totalGoldProfitWeight = $goldItems->sum('profit_gold');
+
+        $totalGoldSold = $goldItems->sum(function ($item) {
+            return $item->fine_gold_weight * $item->quantity;
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | SILVER TOTALS
+        |--------------------------------------------------------------------------
+        */
+
+        $totalSilverRevenue = $silverItems->sum('selling_price');
+
+        $totalSilverProfitCash = $silverItems->sum(function ($item) {
+            return $item->profit_gold * $item->gold_rate;
+        });
+
+        $totalSilverProfitWeight = $silverItems->sum('profit_gold');
+
+        $totalSilverSold = $silverItems->sum(function ($item) {
+            return $item->net_weight * $item->quantity;
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | COMBINED TOTALS
+        |--------------------------------------------------------------------------
+        */
+
+        $totalRevenue = $totalGoldRevenue + $totalSilverRevenue;
+
+        $totalProfitCash = $totalGoldProfitCash + $totalSilverProfitCash;
+
         return view('admin.reports.profit_loss', compact(
-            'orders',
+            'goldItems',
+            'silverItems',
+
+            'totalGoldRevenue',
+            'totalGoldProfitCash',
+            'totalGoldProfitWeight',
+            'totalGoldSold',
+
+            'totalSilverRevenue',
+            'totalSilverProfitCash',
+            'totalSilverProfitWeight',
+            'totalSilverSold',
+
             'totalRevenue',
-            'totalProfitCash',
-            'totalProfitGold',
-            'totalGoldSold'
+            'totalProfitCash'
         ));
     }
 }
